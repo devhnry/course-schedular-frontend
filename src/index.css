@@ -1,1 +1,7 @@
 @import "tailwindcss";
+@tailwind utilities;
+
+.hero-title{
+    @apply text-[clamp(32px,calc(32px+28*((100vw-375px)/525)),60px)] font-bold
+    leading-tight text-transparent bg-gradient-to-r from-black to-black/40 bg-clip-text;
+}

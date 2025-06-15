@@ -1,18 +1,14 @@
-import Button from "../shared/Button.tsx";
+import Button from "../shared/Button";
+import TextInput from "../shared/TextInput";
 import {useNavigate} from "react-router-dom";
-import {useLogin} from "../../hooks/useLogin.ts";
+import {useLogin} from "../../hooks/useLogin";
 import {useForm} from "react-hook-form";
-import {LoginInput} from "../../schemas/authSchema.ts";
-import {useState} from "react";
-import {EyeClosedIcon, EyeIcon} from "lucide-react";
-
+import {LoginInput} from "../../schemas/authSchema";
 
 const LoginForm = () => {
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
-
-    const { login, loading } = useLogin()
-    const { register,  handleSubmit } = useForm<LoginInput>();
+    const { login, loading } = useLogin();
+    const { register, handleSubmit } = useForm<LoginInput>();
 
     const onSubmit = async (data: LoginInput) => {
         const result = await login(data);
@@ -22,34 +18,41 @@ const LoginForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className={`grid w-full gap-4`}>
-            <div>
-                <label className={`text-[14px] pb-1 block`}>Email Address</label>
-                <input
-                    {...register("email", { required: true })}
-                    className={`w-full border p-3 border-black/20 outline-none rounded-md text-[14px] placeholder:text-gray-500/80`}
-                    type="text" name="email" id="email" placeholder="hod@covenantuniveristy.edu.ng"/>
-            </div>
-            <div className={`relative`}>
-                <div onClick={() => {setShowPassword(!showPassword)}}
-                     className={`absolute right-[10px] top-[55%] cursor-pointer z-10`}>
-                    {showPassword ? <EyeIcon className={`size-[20px]`} /> : <EyeClosedIcon className={`size-[20px]`} />}
-                </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid w-full gap-4">
+            <TextInput
+                label="Email Address"
+                name="email"
+                placeholder="hod@covenantuniveristy.edu.ng"
+                register={register}
+            />
+            <div className="relative">
                 <button
-                    className={`text-[11.5px] pb-1 block cursor-pointer absolute right-[2px] top-[6.5px] font-light hover:underline transition-all `}
-                    onClick={() => navigate('/forgot-password')}>Forgot Password ?</button>
-                <label className={`text-[14px] pb-1 block`}>Password</label>
-                <input
-                    {...register("password", { required: true })}
-                    className={`w-full border p-3 border-black/20 outline-none rounded-md text-[14px] placeholder:text-gray-500/80`}
-                    type={`${showPassword ? 'text' : 'password'}`} name="password" id="password" placeholder="passsword"/>
+                    type="button"
+                    onClick={() => navigate("/forgot-password")}
+                    className="text-xs absolute z-10 right-2 top-1.5 font-light hover:underline cursor-pointer"
+                >
+                    Forgot Password?
+                </button>
+                <TextInput
+                    label="Password"
+                    name="password"
+                    placeholder="••••••••••"
+                    register={register}
+                    showToggle
+                />
             </div>
-            <Button text={loading ? 'Logging in..' : 'Sign in'}
-                    classname={`w-full bg-black text-white p-2.5 font-body text-[14px] mb-3 ${loading ? 'opacity-50' : ''}`} />
-            <div className={`grid gap-4 w-full`}>
-                <hr className={`opacity-10`} />
-                <p className={`text-center text-[11.5px] font-light`}>Don't have an account? <strong className={`font-medium`}>Contact DAPU</strong></p>
-                <hr className={`opacity-10`} />
+
+            <Button
+                text={loading ? "Logging in..." : "Sign in"}
+                classname={`w-full bg-black text-white p-2.5 text-sm mb-3 ${loading ? "opacity-50" : ""}`}
+            />
+
+            <div className="grid gap-4 w-full">
+                <hr className="opacity-10" />
+                <p className="text-center text-xs font-light">
+                    Don't have an account? <strong className="font-medium">Contact DAPU</strong>
+                </p>
+                <hr className="opacity-10" />
             </div>
         </form>
     );

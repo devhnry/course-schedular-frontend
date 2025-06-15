@@ -9,7 +9,7 @@ export function useLogin() {
     const [loading, setLoading] = useState(false);
     const [otpLoading, setOtpLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { setAuthEmail, setOtpType, setToken } = useAuthStore();
+    const { setAuthEmail, setOtpType, setToken, setRole } = useAuthStore();
 
     const login = async (data: LoginInput): Promise<"otp" | null> => {
         const parsed = loginSchema.safeParse(data);
@@ -69,9 +69,8 @@ export function useLogin() {
             switch (res.statusCode) {
                 case AuthStatusCode.Success:
                     setAuthEmail(res.data.email);
-                    localStorage.setItem("authEmail", data.email)
-                    localStorage.setItem("auth_token", res.data.accessToken);
                     setToken(res.data.accessToken);
+                    setRole(res.data.role)
                     toast.success("Login successfully");
                     return "success"
                 case AuthStatusCode.ExpiredOrInvalidOtp:

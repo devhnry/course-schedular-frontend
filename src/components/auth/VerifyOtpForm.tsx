@@ -10,6 +10,7 @@ import {useAuthStore} from "../../store/useAuthStore.ts";
 const VerifyOtpForm = () => {
     const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
     const inputRefs = useRef<HTMLInputElement[]>([]);
+    const { role, otpType } = useAuthStore();
 
     const navigate = useNavigate();
 
@@ -53,12 +54,20 @@ const VerifyOtpForm = () => {
 
     const onSubmit = async (data: OtpInput) => {
         data.oneTimePassword = finalOtp
-        data.email = authEmail as string || localStorage.getItem("authEmail") as string;
+        data.email = authEmail as string;
         console.log(data);
 
         const result = await verifyOtp(data);
-        if (result === "success") {
-            navigate("/dashboard");
+        console.log(result, otpType, role);
+
+        if (result === "success" && otpType === 'login') {
+            if(role === 'DAPU'){
+                navigate("/dashboard/dapu");
+            }else if(role === 'HOD'){
+                navigate("/dashboard/hod");
+            }else{
+                console.log("Something went wrong!");
+            }
         }
     }
 

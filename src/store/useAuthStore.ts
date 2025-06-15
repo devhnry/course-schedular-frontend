@@ -1,23 +1,49 @@
-import {create} from "zustand";
+import {create} from 'zustand';
+import {persist} from 'zustand/middleware';
 
 type OtpType = "login" | "forgot_password" | "password_confirmation"
 
-type AuthState = {
+interface AuthState {
     token: string | null;
-    authEmail: string | null;
-    otpType: OtpType | null;
-    setOtpType: (otpType: OtpType) => void;
-    setToken: (token: string) => void;
-    setAuthEmail: (authEmail: string) => void;
-    logout: () => void;
-};
+    setToken: (token: string | null) => void;
 
-export const useAuthStore = create<AuthState>((set) => ({
-    token: null,
-    authEmail: null,
-    otpType: null,
-    setToken: (token) => set({ token }),
-    setAuthEmail: ( authEmail) => set({ authEmail }),
-    setOtpType: ( otpType) => set({ otpType }),
-    logout: () => set({ token: null }),
-}));
+    authEmail: string | null;
+    setAuthEmail: (email: string | null) => void;
+
+    otpType: OtpType | null;
+    setOtpType: (otpType: OtpType | null) => void;
+
+    role: string | null;
+    setRole: (role: string | null) => void;
+
+    logout: () => void;
+}
+
+export const useAuthStore = create<AuthState>()(
+    persist(
+        (set) => ({
+            token: null,
+            setToken: (token) => set({ token }),
+
+            authEmail: null,
+            setAuthEmail: (authEmail) => set({ authEmail }),
+
+            otpType: null,
+            setOtpType: (otpType) => set({ otpType }),
+
+            role: null,
+            setRole: (role) => set({ role }),
+
+            logout: () =>
+                set({
+                    token: null,
+                    authEmail: null,
+                    otpType: null,
+                    role: null,
+                }),
+        }),
+        {
+            name: 'auth-storage', // key in localStorage
+        }
+    )
+);

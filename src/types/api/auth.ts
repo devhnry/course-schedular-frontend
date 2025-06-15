@@ -17,16 +17,17 @@ export interface OtpResponse {
 }
 
 export interface SuccessLoginResponse {
-    statusCode: 1;
+    statusCode: 12;
     statusMessage: string;
     data: {
+        fullName: string;
+        role: string;
+        email: string;
+        loginVerified: boolean;
         accessToken: string;
         refreshToken: string;
         tokenExpirationDuration: string;
-        userId: string;
-        fullName: string;
-        email: string;
-        role: string;
+        oneTimePassword: string | null;
     };
 }
 
@@ -37,10 +38,11 @@ export interface ErrorLoginResponse {
 }
 
 export enum AuthStatusCode {
-    Success = 1,
+    Success = 12,
     RequireOTP = 13,
     UserNotFound = 99,
     InvalidPassword = 42,
+    ExpiredOrInvalidOtp = 99
 }
 
 export type LoginResponse = OtpResponse | SuccessLoginResponse | ErrorLoginResponse;

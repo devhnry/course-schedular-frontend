@@ -1,10 +1,13 @@
 import {useRoutes} from 'react-router-dom';
 import LandingPage from "../pages/LandingPage.tsx";
+import NotFound from "../pages/NotFoundPage.tsx";
+import LoginPage from "../pages/LoginPage.tsx";
 
 const AppRoutes = () => {
     return useRoutes([
         {path: '/', element: <LandingPage/>},
-        { path: '*', element: <div>Not FOUND 404</div> }, // 404 fallback
+        {path: '/login', element: <LoginPage/>},
+        { path: '*', element: <NotFound />}, // 404 fallback
     ]);
 };
 

@@ -23,6 +23,7 @@ const LandingPage = () => {
                                         <Button
                                             key={text}
                                             text={text}
+                                            to={'/login'}
                                             classname={`py-2 px-3 hover:scale-[101%] text-[18px] 
                                                 ${i === 1 && 'bg-black text-white hover:bg-black/90 px-1.5'}`} />
                                     ))}

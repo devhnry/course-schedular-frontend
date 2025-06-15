@@ -1,7 +1,63 @@
 @import "tailwindcss";
 @tailwind utilities;
 
+@font-face {
+    font-family: 'PublicSans';
+    src: url('./assets/fonts/PublicSans-Variable.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PublicSans-VariableItalic';
+    src: url('./assets/fonts/PublicSans-VariableItalic.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DMSerifDisplay';
+    src: url('./assets/fonts/DMSerifDisplay-Regular.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DMSerifDisplayItalic';
+    src: url('./assets/fonts/DMSerifDisplay-Italic.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: italic;
+}
+
 .hero-title{
-    @apply text-[clamp(32px,calc(32px+28*((100vw-375px)/525)),60px)] font-bold
-    leading-tight text-transparent bg-gradient-to-r from-black to-black/40 bg-clip-text;
+    @apply text-[clamp(32px,calc(32px+28*((100vw-375px)/525)),60px)] font-bold text-transparent bg-gradient-to-r from-black to-black/40 bg-clip-text;
+}
+
+@theme {
+    --color-primary-400: #ba4270;
+    --color-primary-300: #da6d97;
+    --color-primary-100: #fbfcfe;
+
+    --color-secondary-700: #1b262f;
+    --color-secondary-500: #36536b;
+    --color-secondary-300: #6c8294;
+    --color-secondary-100: #EDF3F8;
+
+    --font-heading: 'DMSerifDisplay', sans-serif;
+    --font-body: 'PublicSans', sans-serif;
+
+    --breakpoint-xsm: 400px;
+    --breakpoint-xs: 460px;
+    --breakpoint-2xs: 600px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 900px;
+    --breakpoint-2lg: 1024px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-2xl: 1280px;
+    --breakpoint-3xl: 1340px;
 }

@@ -1,5 +1,4 @@
-// src/api/auth.ts
-import apiClient from "../services/apiClient";
+import apiClient from "../services/api/apiClient.ts";
 import {LoginInput, OtpInput} from "../schemas/authSchema";
 
 export const login = (data: LoginInput) =>
@@ -7,6 +6,9 @@ export const login = (data: LoginInput) =>
 
 export const verifyLoginOtp= (data: OtpInput) =>
     apiClient.post("/auth/login/verify-otp", data);
+
+export const resendOtpApi = (params: {email: string}) =>
+    apiClient.post(`/auth/resend-otp?email=${params.email}`);
 
 export const logoutApi =
     () => apiClient.post("/logout");

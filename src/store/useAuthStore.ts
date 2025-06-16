@@ -10,6 +10,9 @@ interface AuthState {
     authEmail: string | null;
     setAuthEmail: (email: string | null) => void;
 
+    fullName: string | null
+    setFullName: (fullName: string) => void
+
     otpType: OtpType | null;
     setOtpType: (otpType: OtpType | null) => void;
 
@@ -34,16 +37,21 @@ export const useAuthStore = create<AuthState>()(
             role: null,
             setRole: (role) => set({ role }),
 
+            fullName: null,
+            setFullName: (fullName: string) => set({ fullName }),
+
             logout: () =>
-                set({
-                    token: null,
-                    authEmail: null,
-                    otpType: null,
-                    role: null,
-                }),
+            set({
+                token: null,
+                authEmail: null,
+                otpType: null,
+                role: null,
+            }),
         }),
         {
             name: 'auth-storage', // key in localStorage
         }
     )
 );
+
+export const getAuthStore = useAuthStore;

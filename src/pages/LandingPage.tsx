@@ -3,7 +3,7 @@ import {cardInfoContent} from "../data/features.ts"
 import heroContent from "../data/hero.json";
 import InfoCard from '../components/landing/InfoCard';
 import TimetableGrid from "../components/landing/TimetableGrid";
-import Container from "../components/layout/Container.tsx";
+import Container from "../components/shared/Container.tsx";
 import Button from "../components/shared/Button.tsx";
 import Caption from "../components/landing/Caption.tsx";
 

@@ -8,4 +8,5 @@ export const login = (data: LoginInput) =>
 export const verifyLoginOtp= (data: OtpInput) =>
     apiClient.post("/auth/login/verify-otp", data);
 
-export const logout = () => apiClient.post("/auth/logout");
+export const logoutApi =
+    () => apiClient.post("/logout");

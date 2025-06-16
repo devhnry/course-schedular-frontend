@@ -1,8 +1,8 @@
 import {useState} from "react";
-import {login as loginRequest, verifyLoginOtp} from "../api/auth";
+import {login as loginRequest, logoutApi, verifyLoginOtp} from "../api/auth";
 import {useAuthStore} from "../store/useAuthStore";
 import {LoginInput, loginSchema, OtpInput, otpSchema} from "../schemas/authSchema";
-import {AuthStatusCode, LoginResponse} from "../types/api/auth";
+import {AuthStatusCode, LoginResponse, LogoutResponse} from "../types/api/auth";
 import toast from "react-hot-toast";
 
 export function useLogin() {
@@ -50,14 +50,15 @@ export function useLogin() {
         }
     };
 
-    const verifyOtp = async (data: OtpInput): Promise<"success" | "failed" | null> => {
+    const verifyOtp = async (data: OtpInput): Promise<
+        { status: "success" | "failed" | null, role?: string }> => {
         const parsed = otpSchema.safeParse(data);
         if (!parsed.success) {
             const firstIssue = parsed.error.issues[0];
             toast.error(firstIssue.message, {
                 duration: 3000
             });
-            return null;
+            return {status: null};
         }
         
         try{
@@ -68,28 +69,57 @@ export function useLogin() {
 
             switch (res.statusCode) {
                 case AuthStatusCode.Success:
-                    setAuthEmail(res.data.email);
-                    setToken(res.data.accessToken);
-                    setRole(res.data.role)
+                    { const { email, accessToken, role } = res.data;
+                    setAuthEmail(email);
+                    setToken(accessToken);
+                    setRole(role)
                     toast.success("Login successfully");
-                    return "success"
+                    return { status :"success", role } }
                 case AuthStatusCode.ExpiredOrInvalidOtp:
                     setError(res.statusMessage);
                     toast.error(res.statusMessage || "Login failed");
-                    return "failed";
+                    return {status: "failed"};
                 default:
                     setError("Unexpected response from server");
-                    return null;
+                    return { status: null };
             }
             
         } catch (err: any) {
             setError(err.response?.data?.statusMessage || "Login failed");
             setOtpLoading(false);
-            return null;
+            return {status: null};
         } finally {
             setOtpLoading(false);
         }
     }
 
-    return { login, verifyOtp, loading, otpLoading, error };
+    const logout = async (): Promise<"success" | "failed" | null> => {
+        try {
+            setLoading(true);
+            const response = await logoutApi();
+            console.log(response);
+            const res: LogoutResponse = response.data;
+
+            switch (res.statusCode) {
+                case AuthStatusCode.LogoutSuccess:
+                    toast.success("Logged out successfully");
+                    return "success";
+                case AuthStatusCode.UserNotFound:
+                    setError(res.statusMessage);
+                    console.error(res.statusMessage);
+                    toast.error(res.statusMessage || "Logout failed");
+                    return "failed";
+                default:
+                    setError("Unexpected response from server");
+                    return null;
+            }
+        } catch (err: any) {
+            setError(err.response?.data?.statusMessage || "Logout failed");
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return { login, verifyOtp, logout, loading, otpLoading, error };
 }

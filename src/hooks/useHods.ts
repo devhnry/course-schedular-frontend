@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {hodClient} from "../services/hodClient.ts";
+import {hodClient} from "../api/hodClient.ts";
 import {HodManagementDto, PageResponse} from "../types/hod";
 
 export const useHods = (initialPage = 0, initialSize = 10) => {

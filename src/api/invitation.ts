@@ -1,4 +1,4 @@
-import apiClient from "../services/api/apiClient.ts";
+import apiClient from "./apiClient.ts";
 import {InvitationInput} from "../schemas/invitationSchema.ts";
 import {GetInvitationResponse} from "../types/invitation.ts";
 

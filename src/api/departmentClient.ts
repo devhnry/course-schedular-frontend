@@ -1,4 +1,4 @@
-import apiClient from "./api/apiClient.ts";
+import apiClient from "./apiClient.ts";
 import {Department, DepartmentDto} from "../types/department.ts";
 
 // GET: all departments

@@ -5,7 +5,7 @@ import {
     getDepartmentById,
     getDepartments,
     updateDepartment,
-} from "../services/departmentClient.ts";
+} from "../api/departmentClient.ts";
 import {Department, DepartmentDto} from "../types/department.ts";
 
 export const useDepartments = () => {

@@ -6,8 +6,22 @@ import TimetableGrid from "../components/landing/TimetableGrid";
 import Container from "../components/shared/Container.tsx";
 import Button from "../components/shared/Button.tsx";
 import Caption from "../components/landing/Caption.tsx";
+import {useAuthStore} from "../store/useAuthStore.ts";
+import {useNavigate} from "react-router-dom";
 
 const LandingPage = () => {
+
+    const {token, role} = useAuthStore()
+    const navigate = useNavigate();
+
+    const onLoginClick = () => {
+        if (token && role) {
+            navigate(`/dashboard/${role.toLowerCase()}`);
+        } else {
+            navigate("/login");
+        }
+    };
+
     return (
         <main>
             <Navbar />
@@ -23,7 +37,8 @@ const LandingPage = () => {
                                         <Button
                                             key={text}
                                             text={text}
-                                            to={'/login'}
+                                            onClick={onLoginClick}
+                                            // to={'/login'}
                                             classname={`py-2 px-3 hover:scale-[101%] text-[18px] 
                                                 ${i === 1 && 'bg-black text-white hover:bg-black/90 px-1.5'}`} />
                                     ))}

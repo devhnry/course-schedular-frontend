@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {login as loginRequest, logoutApi, verifyLoginOtp} from "../api/auth";
+import {login as loginRequest, logoutApi, resendOtpApi, verifyLoginOtp} from "../api/auth";
 import {useAuthStore} from "../store/useAuthStore";
 import {LoginInput, loginSchema, OtpInput, otpSchema} from "../schemas/authSchema";
 import {AuthStatusCode, LoginResponse, LogoutResponse} from "../types/api/auth";
@@ -47,6 +47,35 @@ export function useLogin() {
             return null;
         } finally {
             setLoading(false);
+        }
+    };
+
+    const resendOtpForLogin = async (email: string): Promise<{ status: "success" | "failed" | null }> => {
+        try {
+            setOtpLoading(true); // optional: show spinner on button
+
+            const response = await resendOtpApi({ email }); // assumes axios helper
+            const res: LoginResponse = response.data;
+
+            switch (res.statusCode) {
+                case AuthStatusCode.RequireOTP:
+                    toast.success("OTP has been resent successfully");
+                    console.log(res)
+                    console.log(res.statusMessage);
+                    return { status: "success" };
+                case AuthStatusCode.UserNotFound:
+                    console.log(res);
+                    toast.error(res.statusMessage || "Too many attempts. Try again later");
+                    return { status: "failed" };
+                default:
+                    toast.error(res.statusMessage || "Failed to resend OTP");
+                    return { status: "failed" };
+            }
+        } catch (err: any) {
+            toast.error(err.response?.data?.statusMessage || "Server error");
+            return { status: null };
+        } finally {
+            setOtpLoading(false);
         }
     };
 
@@ -121,5 +150,5 @@ export function useLogin() {
         }
     }
 
-    return { login, verifyOtp, logout, loading, otpLoading, error };
+    return { login, resendOtpForLogin, verifyOtp, logout, loading, otpLoading, error };
 }

@@ -2,8 +2,9 @@ import {useState} from "react";
 import {login as loginRequest, logoutApi, resendOtpApi, verifyLoginOtp} from "../api/auth";
 import {useAuthStore} from "../store/useAuthStore";
 import {LoginInput, loginSchema, OtpInput, otpSchema} from "../schemas/authSchema";
-import {AuthStatusCode, LoginResponse, LogoutResponse} from "../types/api/auth";
+import {AuthStatusCode, LoginResponse, LogoutResponse} from "../types/auth.ts";
 import toast from "react-hot-toast";
+import {AxiosError} from "axios";
 
 export function useLogin() {
     const [loading, setLoading] = useState(false);
@@ -42,8 +43,9 @@ export function useLogin() {
                     setError("Unexpected response from server");
                     return null;
             }
-        } catch (err: any) {
-            setError(err.response?.data?.statusMessage || "Login failed");
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error.response?.data?.statusMessage || "Failed to update access");
             return null;
         } finally {
             setLoading(false);
@@ -71,8 +73,9 @@ export function useLogin() {
                     toast.error(res.statusMessage || "Failed to resend OTP");
                     return { status: "failed" };
             }
-        } catch (err: any) {
-            toast.error(err.response?.data?.statusMessage || "Server error");
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error.response?.data?.statusMessage || "Failed to send OTP");
             return { status: null };
         } finally {
             setOtpLoading(false);
@@ -113,10 +116,10 @@ export function useLogin() {
                     return { status: null };
             }
             
-        } catch (err: any) {
-            setError(err.response?.data?.statusMessage || "Login failed");
-            setOtpLoading(false);
-            return {status: null};
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error.response?.data?.statusMessage || "Login FAILED");
+            return { status: null };
         } finally {
             setOtpLoading(false);
         }
@@ -142,8 +145,9 @@ export function useLogin() {
                     setError("Unexpected response from server");
                     return null;
             }
-        } catch (err: any) {
-            setError(err.response?.data?.statusMessage || "Logout failed");
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error.response?.data?.statusMessage || "Logout FAILED");
             return null;
         } finally {
             setLoading(false);

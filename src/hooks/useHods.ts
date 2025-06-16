@@ -1,14 +1,18 @@
 import {useEffect, useState} from "react";
-import {hodClient} from "../api/hodClient.ts";
+import {hodClient} from "../api/clients/hodClient.ts";
 import {HodManagementDto, PageResponse} from "../types/hod";
+import {AxiosError} from "axios";
 
 export const useHods = (initialPage = 0, initialSize = 10) => {
     const [page, setPage] = useState<number>(initialPage);
     const [size] = useState<number>(initialSize);
-
     const [data, setData] = useState<PageResponse<HodManagementDto> | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError]     = useState<string | null>(null);
+
+    useEffect(() => {
+        fetchPage(page);
+    }, [page]);
 
     const fetchPage = async (p: number) => {
         setLoading(true);
@@ -24,33 +28,14 @@ export const useHods = (initialPage = 0, initialSize = 10) => {
                 number: p,
             });
             setError(null);
-        } catch (err: any) {
-            setError(err.message || "Failed to load HODs");
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error.response?.data?.statusMessage || "Failed to update access");
         } finally {
             setLoading(false);
         }
     };
 
-
-    // const fetchPage = async (p: number) => {
-    //     setLoading(true);
-    //     try {
-    //         const pageData = await hodClient.list(p, size);
-    //         setData(pageData);
-    //         setError(null);
-    //     } catch (err: any) {
-    //         setError(err.message || "Failed to load HODs");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // fetch when page changes
-    useEffect(() => {
-        fetchPage(page);
-    }, [page]);
-
-    // actions
     const updateAccess = async (userId: string, write: boolean) => {
         setLoading(true);
         try {
@@ -65,8 +50,9 @@ export const useHods = (initialPage = 0, initialSize = 10) => {
                     ),
                 };
             });
-        } catch (err: any) {
-            setError(err.message || "Failed to update access");
+        }  catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error.response?.data?.statusMessage || "Failed to update access");
         } finally {
             setLoading(false);
         }
@@ -81,7 +67,6 @@ export const useHods = (initialPage = 0, initialSize = 10) => {
         setLoading(true);
         try {
             await hodClient.delete(userId);
-            // remove from list
             setData((d) => {
                 if (!d) return d;
                 return {
@@ -89,13 +74,13 @@ export const useHods = (initialPage = 0, initialSize = 10) => {
                     content: d.content.filter((h) => h.userId !== userId),
                 };
             });
-        } catch (err: any) {
-            setError(err.message || "Failed to delete HOD");
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error.response?.data?.statusMessage || "Failed to delete HOD.");
         } finally {
             setLoading(false);
         }
     };
-
 
     return { data,  loading,  error,  page,  setPage,  updateAccess,  deleteHod,  refresh: () => fetchPage(page),
     };

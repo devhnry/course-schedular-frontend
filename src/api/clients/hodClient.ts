@@ -1,6 +1,6 @@
 // src/api/hodClient.ts
 import apiClient from "./apiClient.ts";
-import {HodManagementDto} from "../types/hod.ts";
+import {HodManagementDto} from "../../types/hod.ts";
 
 const BASE = "/hods";  // matches your controller’s @RequestMapping("/api/v1/hods")
 

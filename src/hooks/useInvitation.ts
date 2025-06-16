@@ -2,19 +2,11 @@ import {useState} from "react";
 import toast from "react-hot-toast";
 import {InvitationInput, invitationSchema} from "../schemas/invitationSchema.ts";
 import {acceptInviteApi, getInviteApi, sendInviteApi} from "../api/invitation.ts";
-import {
-    GetInvitationResponse,
-    InvitationResponse,
-    InvitationResponseData,
-    InvitationStatusCode,
-} from "../types/invitation.ts";
+import { GetInvitationResponse, InvitationResponse, InvitationResponseData, InvitationStatusCode } from "../types/invitation.ts";
 import {AxiosError} from "axios";
-
-// import {useInvitationStore} from "../store/useInvitationStore.ts";
 
 export function useInvitation(){
     const [loading, setLoading] = useState(false);
-    // const { setInviteVerified  } = useInvitationStore();
     const [error, setError] = useState<string | null>(null);
 
     const sendInvite = async (data: InvitationInput): Promise<'success' | 'failure' | null> => {

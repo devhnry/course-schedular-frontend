@@ -1,12 +1,7 @@
 import {useEffect, useState} from "react";
-import {
-    createDepartment,
-    deleteDepartment,
-    getDepartmentById,
-    getDepartments,
-    updateDepartment,
-} from "../api/departmentClient.ts";
+import { createDepartment,  deleteDepartment,  getDepartmentById,  getDepartments,  updateDepartment } from "../api/clients/departmentClient.ts";
 import {Department, DepartmentDto} from "../types/department.ts";
+import {AxiosError} from "axios";
 
 export const useDepartments = () => {
     const [departments, setDepartments] = useState<Department[]>([]);
@@ -19,7 +14,8 @@ export const useDepartments = () => {
             const result = await getDepartments();
             setDepartments(result);
         } catch (err) {
-            setError("Failed to load departments");
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error?.response?.data?.statusMessage || "Failed to load departments");
         } finally {
             setLoading(false);
         }
@@ -50,14 +46,5 @@ export const useDepartments = () => {
         fetchAll();
     }, []);
 
-    return {
-        departments,
-        loading,
-        error,
-        refetch: fetchAll,
-        fetchById,
-        create,
-        update,
-        remove,
-    };
+    return { departments,  loading,  error,  refetch: fetchAll,  fetchById,  create,  update,  remove };
 };

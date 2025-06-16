@@ -1,4 +1,4 @@
-import apiClient from "./apiClient.ts";
+import apiClient from "./clients/apiClient.ts";
 import {LoginInput, OtpInput} from "../schemas/authSchema";
 
 export const login = (data: LoginInput) =>

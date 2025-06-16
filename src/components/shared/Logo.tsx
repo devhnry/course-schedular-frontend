@@ -11,7 +11,7 @@ const Logo = () => {
                     <ClockIcon className={`size-[20px]`} />
                 </div>
             </div>
-            <p className={`text-xl`}>Timetable</p>
+            <p className={`text-xl`}>TimetablePro</p>
         </div>
     );
 };

@@ -6,12 +6,14 @@ import VerifyOtpPage from "../pages/VerifyOtpPage.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import HODDashboardPage from "../pages/HODDashboardPage.tsx";
 import DAPUDashboardPage from "../pages/DAPUDashboardPage.tsx";
+import AcceptInvitePage from "../pages/AcceptInvitePage.tsx";
 
 const AppRoutes = () => {
     return useRoutes([
         {path: '/', element: <LandingPage/>},
         {path: '/login', element: <LoginPage/>},
         {path: '/verify-otp', element: <VerifyOtpPage />},
+        {path: '/accept-invite', element: <AcceptInvitePage />},
         {
             path: '/dashboard/hod',
             element: (

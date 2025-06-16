@@ -53,5 +53,3 @@ export const useAuthStore = create<AuthState>()(
         }
     )
 );
-
-export const getAuthStore = useAuthStore;

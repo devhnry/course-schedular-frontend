@@ -6,24 +6,27 @@ import {useInvitation} from "../../../hooks/useInvitation.ts";
 import {useDepartments} from "../../../hooks/useDepartments.ts";
 import DepartmentDropdown from "./DepartmentDropdown.tsx";
 import {useState} from "react";
-import {Department} from "../../../types/department.ts";
+import {DepartmentResponseDto} from "../../../types/department.ts";
 import toast from "react-hot-toast";
+import {useHods} from "../../../hooks/useHods.ts";
 
 const InviteHodForm = () => {
     const { departments } = useDepartments()
     const { register, handleSubmit, setValue, reset, formState : {errors} } = useForm<InvitationInput>({mode: "onChange"});
     const { loading, sendInvite } = useInvitation()
-    const [selectedDept, setSelectedDept] = useState<Department | null>(null);
+    const { refresh } = useHods(0, 10)
+    const [selectedDept, setSelectedDept] = useState<DepartmentResponseDto | null>(null);
 
     const onSubmit = async (data: InvitationInput) => {
         if (!selectedDept) {
             toast("Please select a department");
             return;
         }
-        data.departmentId = String(selectedDept.id);
+        data.departmentCode = selectedDept.code;
         await sendInvite(data);
 
         reset();
+        await refresh()
         setSelectedDept(null);
     };
 
@@ -44,7 +47,7 @@ const InviteHodForm = () => {
                     selected={selectedDept}
                     onSelect={(dept) => {
                         setSelectedDept(dept);
-                        setValue("departmentId", String(dept.id)); // for form data completeness
+                        setValue("departmentCode", String(dept.id)); // for form data completeness
                     }}
                 />
             </div>

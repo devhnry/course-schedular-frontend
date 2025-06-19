@@ -1,15 +1,11 @@
 import {useEffect, useRef, useState} from "react";
 import {ChevronDown} from "lucide-react";
-
-interface Department {
-    id: number;
-    name: string;
-}
+import {DepartmentResponseDto} from "../../../types/department.ts";
 
 interface Props {
-    departments: Department[];
-    onSelect: (dept: Department) => void;
-    selected: Department | null;
+    departments: DepartmentResponseDto[];
+    onSelect: (dept: DepartmentResponseDto) => void;
+    selected: DepartmentResponseDto | null;
 }
 
 const DepartmentDropdown = ({ departments, selected, onSelect }: Props) => {

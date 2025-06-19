@@ -1,22 +1,22 @@
 import apiClient from "./apiClient.ts";
-import {Department, DepartmentDto} from "../../types/department.ts";
+import {DepartmentRequestDto, DepartmentResponseDto} from "../../types/department.ts";
 
-export const getDepartments = async (): Promise<Department[]> => {
+export const getDepartments = async (): Promise<DepartmentResponseDto[]> => {
     const res = await apiClient.get("/departments");
     return res.data.data;
 };
 
-export const getDepartmentById = async (id: number): Promise<Department> => {
+export const getDepartmentById = async (id: number): Promise<DepartmentResponseDto> => {
     const res = await apiClient.get(`/departments/${id}`);
     return res.data.data;
 };
 
-export const createDepartment = async (dto: DepartmentDto): Promise<Department> => {
+export const createDepartment = async (dto: DepartmentRequestDto): Promise<DepartmentResponseDto> => {
     const res = await apiClient.post("/departments", dto);
     return res.data.data;
 };
 
-export const updateDepartment = async (id: number, dto: DepartmentDto): Promise<Department> => {
+export const updateDepartment = async (id: number, dto: DepartmentRequestDto): Promise<DepartmentResponseDto> => {
     const res = await apiClient.put(`/departments/${id}`, dto);
     return res.data.data;
 };

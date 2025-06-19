@@ -1,8 +1,13 @@
-export interface Department {
-    id: number;
+export interface DepartmentRequestDto {
     name: string;
+    code: string;
+    collegeBuildingCode: string;
 }
 
-export interface DepartmentDto {
+export interface DepartmentResponseDto {
+    id: number;
     name: string;
+    code: string;
+    collegeBuildingCode: string;
+    collegeBuildingName: string;
 }

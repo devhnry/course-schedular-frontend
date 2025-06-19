@@ -2,12 +2,19 @@ import {useState} from "react";
 import toast from "react-hot-toast";
 import {InvitationInput, invitationSchema} from "../schemas/invitationSchema.ts";
 import {acceptInviteApi, getInviteApi, sendInviteApi} from "../api/invitation.ts";
-import { GetInvitationResponse, InvitationResponse, InvitationResponseData, InvitationStatusCode } from "../types/invitation.ts";
+import {
+    GetInvitationResponse,
+    InvitationResponse,
+    InvitationResponseData,
+    InvitationStatusCode
+} from "../types/invitation.ts";
 import {AxiosError} from "axios";
+import {useAuthStore} from "../store/useAuthStore.ts";
 
 export function useInvitation(){
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { setInvitedDepartment } = useAuthStore()
 
     const sendInvite = async (data: InvitationInput): Promise<'success' | 'failure' | null> => {
         const parsed = invitationSchema.safeParse(data);
@@ -55,8 +62,8 @@ export function useInvitation(){
 
             switch (res.statusCode) {
                 case InvitationStatusCode.AcceptInviteSuccess:
+                    setInvitedDepartment(res.data?.departmentCode)
                     toast("Invitation Verified", { icon: "📨" });
-                    // setInviteVerified(true)
                     return "success";
                 case InvitationStatusCode.Failed:
                     setError(res.statusMessage);

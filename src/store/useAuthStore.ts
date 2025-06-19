@@ -19,6 +19,12 @@ interface AuthState {
     role: string | null;
     setRole: (role: string | null) => void;
 
+    invitedEmail: string | null;
+    setInvitedEmail: (invitedEmail: string | null) => void;
+
+    invitedDepartment: string | null;
+    setInvitedDepartment: (invitedDepartment: string | null) => void;
+
     logout: () => void;
 }
 
@@ -39,6 +45,12 @@ export const useAuthStore = create<AuthState>()(
 
             fullName: null,
             setFullName: (fullName: string) => set({ fullName }),
+
+            invitedEmail: null,
+            setInvitedEmail: (invitedEmail) => set({ invitedEmail }),
+
+            invitedDepartment: null,
+            setInvitedDepartment: (invitedDepartment: string | null) => set({ invitedDepartment }),
 
             logout: () =>
             set({

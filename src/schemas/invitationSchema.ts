@@ -2,7 +2,7 @@ import {z} from "zod";
 
 export const invitationSchema = z.object({
     email: z.string().email("Invalid email address"),
-    departmentId: z.string()
+    departmentCode: z.string()
 });
 
 export const acceptInvitationSchema = z.object({

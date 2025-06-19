@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute.tsx";
 import HODDashboardPage from "../pages/HODDashboardPage.tsx";
 import DAPUDashboardPage from "../pages/DAPUDashboardPage.tsx";
 import AcceptInvitePage from "../pages/AcceptInvitePage.tsx";
+import OnboardPage from "../pages/OnboardPage.tsx";
 
 const AppRoutes = () => {
     return useRoutes([
@@ -14,6 +15,7 @@ const AppRoutes = () => {
         {path: '/login', element: <LoginPage/>},
         {path: '/verify-otp', element: <VerifyOtpPage />},
         {path: '/accept-invite', element: <AcceptInvitePage />},
+        {path: '/onboarding', element: <OnboardPage />},
         {
             path: '/dashboard/hod',
             element: (

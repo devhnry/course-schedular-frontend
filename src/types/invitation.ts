@@ -4,6 +4,7 @@ export interface SuccessInviteResponse {
     data: {
         email: string;
         inviteToken: string;
+        departmentCode: string;
         inviteVerified: boolean;
         inviteDate: string;
         expirationDate: string;
@@ -16,6 +17,7 @@ export interface SuccessAcceptInviteResponse {
     data: {
         email: string;
         inviteToken: string;
+        departmentCode: string;
         inviteVerified: boolean;
         inviteDate: string;
         expirationDate: string;
@@ -33,6 +35,7 @@ export interface InvitationResponseData {
     emailAddress: string;
     role: string;
     departmentName: string;
+    departmentCode: string;
     token: string;
     expiryDate: string;
     expiredOrUsed: boolean;

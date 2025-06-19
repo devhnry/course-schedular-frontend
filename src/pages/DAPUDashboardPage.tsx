@@ -1,5 +1,5 @@
-import {FC, JSX, useState} from "react";
-import {Building2, CalendarIcon, Landmark, LayoutDashboardIcon, MapPinned, SettingsIcon, UsersIcon} from "lucide-react";
+import {FC, JSX} from "react";
+import {Book, Building2, CalendarIcon, Landmark, LayoutDashboardIcon, MapPinned, UsersIcon} from "lucide-react";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import Container from "../components/shared/Container";
 
@@ -10,7 +10,8 @@ import Timetables from "../components/dashboard/dapu/TimetableView.tsx";
 import ManageVenues from "../components/dashboard/dapu/ManageVenue.tsx";
 import Departments from "../components/dashboard/dapu/DepartmentView.tsx";
 import CollegeBuildings from "../components/dashboard/dapu/CollegeBuildingView.tsx";
-import Settings from "../components/dashboard/dapu/Settings.tsx";
+import ProgramView from "../components/dashboard/dapu/ProgramView.tsx";
+import {useDapuDashboard} from "../store/useDapuDashboard.ts";
 
 interface Page {
     icon: JSX.Element;
@@ -21,17 +22,17 @@ interface Page {
 const DapuDashboardPage = () => {
 
     const pages: Page[] = [
-        { icon: <LayoutDashboardIcon size={20} />, title: "Dashboard", Component: DashboardOverview },
+        { icon: <LayoutDashboardIcon size={20} />,   title: "Dashboard", Component: DashboardOverview },
         { icon: <UsersIcon size={20} />,             title: "Manage HODs",   Component: ManageHods },
         { icon: <CalendarIcon size={20} />,          title: "Timetables", Component: Timetables},
         { icon: <MapPinned size={20} />,             title: "Manage Venues",  Component: ManageVenues},
         { icon: <Landmark size={20} />,              title: "Departments", Component: Departments },
         { icon: <Building2 size={20} />,             title: "College Buildings", Component: CollegeBuildings },
-        { icon: <SettingsIcon size={20} />,          title: "Settings",  Component: Settings },
+        { icon: <Book size={20} />,                  title: "Program", Component: ProgramView }
     ];
 
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const SelectedPage = pages[selectedIndex].Component as FC;
+    const { selectedIndex, setSelectedIndex } = useDapuDashboard();
+    const SelectedPage = pages[selectedIndex as number].Component as FC;
 
     return (
         <DashboardLayout>

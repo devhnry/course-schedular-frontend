@@ -53,5 +53,24 @@ export enum AuthStatusCode {
     ExpiredOrInvalidOtp = 99
 }
 
+export interface OnboardRequestDto {
+    fullName: string;
+    emailAddress: string;
+    password: string;
+    confirmPassword: string;
+    departmentCode: string;
+}
+
+export interface SuccessfulOnboardDto {
+    userId: string;
+    fullName: string;
+    role: string;
+    emailAddress: string;
+    accessToken: string;
+    tokenExpirationDuration: string;
+    user: Record<string, any>; // or specific AppUserDto if you have one
+}
+
+
 export type LoginResponse = OtpResponse | SuccessLoginResponse | ErrorLoginResponse;
 export type LogoutResponse = ErrorLoginResponse | SuccessLogoutResponse;

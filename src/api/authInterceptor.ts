@@ -3,7 +3,7 @@ import {clearAuth, getStoredToken, saveToken} from "./tokenUtils.ts";
 import {addToQueue, getRefreshing, processQueue, setRefreshing} from "./queue.ts";
 import toast from "react-hot-toast";
 
-const AUTH_EXCLUDE_ENDPOINTS = ["/login", "/refresh-token"]; // etc
+const AUTH_EXCLUDE_ENDPOINTS = ["/login", "/refresh-token", "/auth/onboard"]; // etc
 
 export const attachAuthInterceptor = (api: AxiosInstance) => {
     api.interceptors.request.use(config => {

@@ -1,102 +1,143 @@
-import {useState} from "react";
-import {MoreVertical} from "lucide-react";
-import toast from "react-hot-toast";
-import Button from "../../shared/Button.tsx";
-import {useVenues} from "../../../hooks/useVenue.ts";
+import {useState} from "react"
+import toast from "react-hot-toast"
+import Button from "../../shared/Button.tsx"
+import {useVenues} from "../../../hooks/useVenue.ts"
+import DataTable from "../common/DataTable.tsx"
+import PageHeader from "../common/PageHeader.tsx"
+import CreateVenueModal from "./modals/CreateVenueModal.tsx"
+import EditVenueModal from "./modals/EditVenueModal.tsx"
+import {Edit, MapPin, Trash2} from "lucide-react"
+import type {VenueResponseDto} from "../../../types/venue.ts"
 
 const ManageVenue = () => {
-    const { venues, loading, error, remove } = useVenues();
+  const { venues, loading, error, remove } = useVenues()
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedVenue, setSelectedVenue] = useState<VenueResponseDto | null>(null)
 
-    const [showDropdownFor, setShowDropdownFor] = useState<number | null>(null);
+  const handleEdit = (venue: VenueResponseDto) => {
+    setSelectedVenue(venue)
+    setShowEditModal(true)
+  }
 
-    const toggleDropdown = (id: number) => {
-        setShowDropdownFor(prev => (prev === id ? null : id));
-    };
+  const handleDelete = async (venue: VenueResponseDto) => {
+    if (window.confirm(`Are you sure you want to delete ${venue.name}?`)) {
+      await remove(venue.id)
+      toast.success("Venue deleted successfully")
+    }
+  }
 
-    const handleDelete = async (id: number) => {
-        await remove(id);
-        toast.success("Venue deleted");
-    };
+  const columns = [
+    {
+      key: "index",
+      label: "S/N",
+      render: (_: any, index: number) => index + 1,
+      className: "w-16",
+    },
+    {
+      key: "name",
+      label: "Name",
+      render: (venue: VenueResponseDto) => <div className="font-medium text-gray-900">{venue.name}</div>,
+    },
+    {
+      key: "capacity",
+      label: "Capacity",
+      render: (venue: VenueResponseDto) => (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          {venue.capacity}
+        </span>
+      ),
+    },
+    {
+      key: "collegeBuildingName",
+      label: "College Building",
+    },
+    {
+      key: "available",
+      label: "Available",
+      render: (venue: VenueResponseDto) => (
+          <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  venue.available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+              }`}
+          >
+          {venue.available ? "Yes" : "No"}
+        </span>
+      ),
+    },
+  ]
 
+  const actions = [
+    {
+      label: "Edit",
+      onClick: handleEdit,
+      icon: <Edit size={16} />,
+      className: "text-gray-700 hover:text-gray-900",
+    },
+    {
+      label: "Delete",
+      onClick: handleDelete,
+      icon: <Trash2 size={16} />,
+      className: "text-red-600 hover:text-red-800",
+    },
+  ]
+
+  if (error) {
     return (
         <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Manage Venues</h2>
-                <Button
-                    text="Add New Venue"
-                    classname="bg-black text-white px-4 py-2 rounded-md"
-                    onClick={() => toast("Open Create Venue Modal (coming soon)", { icon: "➕" })}
-                />
-            </div>
-
-            {loading && <p className="text-gray-500">Loading venues...</p>}
-            {error && <p className="text-red-500 border-red-300 p-4 border rounded-md bg-red-300/10 font-bold mb-4">{error}</p>}
-
-            <div className="overflow-x-auto border rounded-md">
-                <table className="min-w-full bg-white text-sm text-left">
-                    <thead className="bg-gray-50">
-                    <tr className="text-gray-700 font-semibold">
-                        <th className="px-4 py-3">S/N</th>
-                        <th className="px-4 py-3">Name</th>
-                        <th className="px-4 py-3">Capacity</th>
-                        <th className="px-4 py-3">College Building</th>
-                        <th className="px-4 py-3">Available?</th>
-                        <th className="px-4 py-3 text-center">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {venues.map((venue, idx) => (
-                        <tr key={venue.id} className="border-t hover:bg-gray-50 transition">
-                            <td className="px-4 py-3">{idx + 1}</td>
-                            <td className="px-4 py-3">{venue.name}</td>
-                            <td className="px-4 py-3">{venue.capacity}</td>
-                            <td className="px-4 py-3">{venue.collegeBuildingName}</td>
-                            <td className="px-4 py-3">{venue.available ? "Yes" : "No"}</td>
-                            <td className="px-4 py-3 text-center relative">
-                                <button
-                                    className="p-2 hover:bg-gray-100 rounded-full"
-                                    onClick={() => toggleDropdown(venue.id)}
-                                >
-                                    <MoreVertical size={18} />
-                                </button>
-
-                                {showDropdownFor === venue.id && (
-                                    <div className="absolute right-4 top-8 w-36 bg-white border shadow-md z-10 rounded-md">
-                                        <button
-                                            className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                                            onClick={() => {
-                                                toast("Edit Venue (coming soon)", { icon: "🛠️" });
-                                                setShowDropdownFor(null);
-                                            }}
-                                        >
-                                            ✏️ Edit
-                                        </button>
-                                        <button
-                                            className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
-                                            onClick={() => {
-                                                handleDelete(venue.id);
-                                                setShowDropdownFor(null);
-                                            }}
-                                        >
-                                            🗑 Delete
-                                        </button>
-                                    </div>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                    {venues.length === 0 && !loading && (
-                        <tr>
-                            <td colSpan={6} className="p-6 text-center text-gray-500 italic">
-                                No venues found.
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
-            </div>
+          <div className="bg-red-50 border border-red-200 rounded-md p-4">
+            <p className="text-red-600 font-medium">Error loading venues</p>
+            <p className="text-red-500 text-sm mt-1">{error}</p>
+          </div>
         </div>
-    );
-};
+    )
+  }
 
-export default ManageVenue;
+  return (
+      <div className="p-6 space-y-6">
+        <PageHeader
+            title="Manage Venues"
+            description="View and manage all university venues and lecture halls"
+            icon={MapPin}
+            actions={
+              <Button
+                  text="Add New Venue"
+                  classname="bg-black hover:bg-gray-800 text-white px-4 py-2 text-sm font-medium rounded-md"
+                  onClick={() => setShowCreateModal(true)}
+              />
+            }
+        />
+
+        <DataTable
+            data={venues}
+            columns={columns}
+            actions={actions}
+            loading={loading}
+            emptyMessage="No venues found. Create your first venue to get started."
+            keyExtractor={(venue) => venue.id}
+        />
+
+        <CreateVenueModal
+            isOpen={showCreateModal}
+            onClose={() => setShowCreateModal(false)}
+            onSuccess={() => {
+              // Data will be refreshed automatically by the hook
+            }}
+        />
+
+        <EditVenueModal
+            isOpen={showEditModal}
+            onClose={() => {
+              setShowEditModal(false)
+              setSelectedVenue(null)
+            }}
+            venue={selectedVenue}
+            onSuccess={() => {
+              // Data will be refreshed automatically by the hook
+            }}
+        />
+      </div>
+  )
+}
+
+export default ManageVenue

@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
-import type {Lecturer, LecturerRequestDto} from "../types/lecturer";
+import type {LecturerRequestDto, LecturerResponseDto} from "../types/lecturer";
 import {lecturerClient} from "../api/clients/lecturerClient";
 import {AxiosError} from "axios";
 
 export const useLecturer = () => {
-    const [lecturers, setLecturers] = useState<Lecturer[]>([]);
+    const [lecturers, setLecturers] = useState<LecturerResponseDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 

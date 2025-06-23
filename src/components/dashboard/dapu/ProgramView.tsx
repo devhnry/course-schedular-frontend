@@ -1,99 +1,130 @@
-import {useState} from "react";
-import {MoreVertical} from "lucide-react";
-import toast from "react-hot-toast";
-import Button from "../../shared/Button.tsx";
-import {usePrograms} from "../../../hooks/useProgram.ts";
+import {useState} from "react"
+import toast from "react-hot-toast"
+import Button from "../../shared/Button.tsx"
+import {usePrograms} from "../../../hooks/useProgram.ts"
+import DataTable from "../common/DataTable.tsx"
+import PageHeader from "../common/PageHeader.tsx"
+import CreateProgramModal from "./modals/CreateProgramModal.tsx"
+import EditProgramModal from "./modals/EditProgramModal.tsx"
+import {Book, Edit, Trash2} from "lucide-react"
+import type {ProgramResponseDto} from "../../../types/program.ts"
 
 const ProgramView = () => {
-    const { programs, loading, error, remove } = usePrograms();
-    const [showDropdownFor, setShowDropdownFor] = useState<number | null>(null);
+    const { programs, loading, error, remove } = usePrograms()
+    const [showCreateModal, setShowCreateModal] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false)
+    const [selectedProgram, setSelectedProgram] = useState<ProgramResponseDto | null>(null)
 
-    const toggleDropdown = (id: number) => {
-        setShowDropdownFor(prev => (prev === id ? null : id));
-    };
+    const handleEdit = (program: ProgramResponseDto) => {
+        setSelectedProgram(program)
+        setShowEditModal(true)
+    }
 
-    const handleDelete = async (id: number) => {
-        await remove(id);
-        toast.success("Program deleted");
-    };
+    const handleDelete = async (program: ProgramResponseDto) => {
+        if (window.confirm(`Are you sure you want to delete ${program.name}?`)) {
+            await remove(program.id)
+            toast.success("Program deleted successfully")
+        }
+    }
+
+    const columns = [
+        {
+            key: "index",
+            label: "#",
+            render: (_: any, index: number) => index + 1,
+            className: "w-16",
+        },
+        {
+            key: "name",
+            label: "Name",
+            render: (program: ProgramResponseDto) => <div className="font-medium text-gray-900">{program.name}</div>,
+        },
+        {
+            key: "departmentName",
+            label: "Department",
+            render: (program: ProgramResponseDto) => (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          {program.departmentName}
+        </span>
+            ),
+        },
+        {
+            key: "collegeName",
+            label: "College",
+        },
+    ]
+
+    const actions = [
+        {
+            label: "Edit",
+            onClick: handleEdit,
+            icon: <Edit size={16} />,
+            className: "text-gray-700 hover:text-gray-900",
+        },
+        {
+            label: "Delete",
+            onClick: handleDelete,
+            icon: <Trash2 size={16} />,
+            className: "text-red-600 hover:text-red-800",
+        },
+    ]
+
+    if (error) {
+        return (
+            <div className="p-6">
+                <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                    <p className="text-red-600 font-medium">Error loading programs</p>
+                    <p className="text-red-500 text-sm mt-1">{error}</p>
+                </div>
+            </div>
+        )
+    }
 
     return (
-        <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Manage Programs</h2>
-                <Button
-                    text="Add New Program"
-                    classname="bg-black text-white px-4 py-2 rounded-md"
-                    onClick={() => toast("Open Create Program Modal (coming soon)", { icon: "➕" })}
-                />
-            </div>
+        <div className="p-6 space-y-6">
+            <PageHeader
+                title="Manage Programs"
+                description="View and manage all university academic programs"
+                icon={Book}
+                actions={
+                    <Button
+                        text="Add New Program"
+                        classname="bg-black hover:bg-gray-800 text-white px-4 py-2 text-sm font-medium rounded-md"
+                        onClick={() => setShowCreateModal(true)}
+                    />
+                }
+            />
 
-            {loading && <p className="text-gray-500">Loading programs...</p>}
-            {error && <p className="text-red-500">{error}</p>}
+            <DataTable
+                data={programs}
+                columns={columns}
+                actions={actions}
+                loading={loading}
+                emptyMessage="No programs found. Create your first program to get started."
+                keyExtractor={(program) => program.id}
+            />
 
-            <div className="overflow-x-auto border rounded-md">
-                <table className="min-w-full bg-white text-sm text-left">
-                    <thead className="bg-gray-50">
-                    <tr className="text-gray-700 font-semibold">
-                        <th className="px-4 py-3">#</th>
-                        <th className="px-4 py-3">Name</th>
-                        <th className="px-4 py-3">Department</th>
-                        <th className="px-4 py-3">College</th>
-                        <th className="px-4 py-3 text-center">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {programs.map((p, idx) => (
-                        <tr key={p.id} className="border-t hover:bg-gray-50 transition">
-                            <td className="px-4 py-3">{idx + 1}</td>
-                            <td className="px-4 py-3">{p.name}</td>
-                            <td className="px-4 py-3">{p.departmentName}</td>
-                            <td className="px-4 py-3">{p.collegeName}</td>
-                            <td className="px-4 py-3 text-center relative">
-                                <button
-                                    className="p-2 hover:bg-gray-100 rounded-full"
-                                    onClick={() => toggleDropdown(p.id)}
-                                >
-                                    <MoreVertical size={18} />
-                                </button>
+            <CreateProgramModal
+                isOpen={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+                onSuccess={() => {
+                    // Data will be refreshed automatically by the hook
+                }}
+            />
 
-                                {showDropdownFor === p.id && (
-                                    <div className="absolute right-4 top-8 w-36 bg-white border shadow-md z-10 rounded-md">
-                                        <button
-                                            className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                                            onClick={() => {
-                                                toast("Edit Program (coming soon)", { icon: "✏️" });
-                                                setShowDropdownFor(null);
-                                            }}
-                                        >
-                                            ✏️ Edit
-                                        </button>
-                                        <button
-                                            className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
-                                            onClick={() => {
-                                                handleDelete(p.id);
-                                                setShowDropdownFor(null);
-                                            }}
-                                        >
-                                            🗑 Delete
-                                        </button>
-                                    </div>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                    {programs.length === 0 && !loading && (
-                        <tr>
-                            <td colSpan={5} className="p-6 text-center text-gray-500 italic">
-                                No programs found.
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
-            </div>
+            <EditProgramModal
+                isOpen={showEditModal}
+                onClose={() => {
+                    setShowEditModal(false)
+                    setSelectedProgram(null)
+                }}
+                program={selectedProgram}
+                onSuccess={() => {
+                    // Data will be refreshed automatically by the hook
+                }}
+            />
         </div>
-    );
-};
+    )
+}
 
-export default ProgramView;
+export default ProgramView

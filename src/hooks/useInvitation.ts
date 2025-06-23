@@ -14,7 +14,7 @@ import {useAuthStore} from "../store/useAuthStore.ts";
 export function useInvitation(){
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { setInvitedDepartment } = useAuthStore()
+    const { setInvitedDepartment, setInvitedEmail } = useAuthStore()
 
     const sendInvite = async (data: InvitationInput): Promise<'success' | 'failure' | null> => {
         const parsed = invitationSchema.safeParse(data);
@@ -63,6 +63,7 @@ export function useInvitation(){
             switch (res.statusCode) {
                 case InvitationStatusCode.AcceptInviteSuccess:
                     setInvitedDepartment(res.data?.departmentCode)
+                    setInvitedEmail(res.data?.email)
                     toast("Invitation Verified", { icon: "📨" });
                     return "success";
                 case InvitationStatusCode.Failed:

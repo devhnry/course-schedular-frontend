@@ -6,17 +6,16 @@ import {useOnboard} from "../hooks/useOnboard";
 import {useAuthStore} from "../store/useAuthStore";
 import toast from "react-hot-toast";
 import AuthLayout from "../components/layout/AuthLayout.tsx";
-import {useEffect} from "react";
 
 const OnboardPage = () => {
-    const { invitedEmail, setInvitedEmail, invitedDepartment, setInvitedDepartment } = useAuthStore();
+    const { invitedEmail, invitedDepartment } = useAuthStore();
     const { register, handleSubmit } = useForm<Omit<OnboardRequestDto, "emailAddress">>();
     const { onboard } = useOnboard();
 
-    useEffect(() => {
-        setInvitedEmail("devthenry@gmail.com");
-        setInvitedDepartment("CIS")
-    }, [setInvitedEmail]);
+    // useEffect(() => {
+    //     setInvitedEmail("devthenry@gmail.com");
+    //     setInvitedDepartment("CIS")
+    // }, [setInvitedEmail]);
 
     const handleOnboard = async (data: Omit<OnboardRequestDto, "emailAddress">) => {
         if (!invitedEmail) {

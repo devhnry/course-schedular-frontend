@@ -11,3 +11,11 @@ export interface Lecturer {
 export interface LecturerRequestDto {
     fullName: string;
 }
+
+export interface LecturerResponseDto {
+    id: number;
+    fullName: string;
+    departmentCode: string;
+    departmentName: string;
+    collegeName: string;
+}

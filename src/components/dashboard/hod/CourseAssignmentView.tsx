@@ -9,7 +9,7 @@ import CreateCourseAssignmentModal from "./modals/CreateCourseAssignmentModal.ts
 import EditCourseAssignmentModal from "./modals/EditCourseAssignmentModal.tsx"
 import {AlertCircle, Calendar, Edit, Trash2} from "lucide-react"
 import type {CourseAssignmentResponseDto} from "../../../types/courseAssignment.ts"
-import {useState} from "react";
+import { useState} from "react";
 
 const CourseAssignmentView = () => {
   const { assignments, loading, remove, refetch, error } = useCourseAssignments()
@@ -18,9 +18,13 @@ const CourseAssignmentView = () => {
   const [selectedAssignment, setSelectedAssignment] = useState<CourseAssignmentResponseDto | null>(null)
 
   const handleEdit = (assignment: CourseAssignmentResponseDto) => {
-    setSelectedAssignment(assignment)
-    setShowEditModal(true)
+      setSelectedAssignment(assignment)
+      setShowEditModal(true)
   }
+      //
+      // useEffect(() => {
+      //     getAssignmentsForDepartment(assignment.id)
+      // }, []);
 
   const handleDelete = async (assignment: CourseAssignmentResponseDto) => {
     if (window.confirm(`Are you sure you want to delete the assignment for ${assignment.courseCode}?`)) {

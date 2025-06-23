@@ -1,9 +1,25 @@
+import AppRoutes from "./routes/routes.tsx";
+import {Toaster} from "react-hot-toast";
+
 function App() {
   return (
       <>
-          <h1 className="text-4xl font-bold text-gray-900 underline">
-              Hello world!
-          </h1>
+        <Toaster
+            toastOptions={{
+              style: {
+                fontSize: "13px",
+                fontWeight: 500,
+                border: '1px solid #eee',
+              },
+              success: {
+                iconTheme: {
+                  primary: "#000",
+                  secondary: "#fff",
+                },
+              },
+            }}
+            position="top-right" reverseOrder={false} />
+        <AppRoutes />
       </>
   )
 }

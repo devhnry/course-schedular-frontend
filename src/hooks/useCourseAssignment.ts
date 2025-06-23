@@ -22,6 +22,20 @@ export const useCourseAssignments = () => {
         }
     };
 
+    const getAssignmentsForDepartment = async (departmentId: number) => {
+        setLoading(true);
+        try{
+            const res = await courseAssignmentClient.getByDepartment(departmentId);
+            setAssignments(res);
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>;
+            setError(error?.response?.data?.statusMessage || "Failed to fetch assignments");
+        } finally {
+            setLoading(false);
+        }
+
+    }
+
     const create = async (dto: CourseAssignmentRequestDto) => {
         const newItem = await courseAssignmentClient.create(dto);
         await fetchAll();
@@ -41,6 +55,7 @@ export const useCourseAssignments = () => {
 
     useEffect(() => {
         fetchAll();
+        // getAssignmentsForDepartment()
     }, []);
 
     return {
@@ -48,6 +63,7 @@ export const useCourseAssignments = () => {
         loading,
         error,
         fetchAll,
+        getAssignmentsForDepartment,
         refetch: fetchAll,
         create,
         update,

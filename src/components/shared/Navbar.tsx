@@ -76,7 +76,7 @@ const Navbar: FC<NavbarProps> = ({ loginButton = true }) => {
                             onClick={toggleMenu}
                             className="cursor-pointer flex items-center gap-2 text-md font-medium"
                         >
-                            {role.toUpperCase()} {role.toUpperCase() === "DAPU" && "Admin"}
+                            {role.toUpperCase()}{role.toUpperCase() === "DAPU" ? " Admin" : `: ${fullName}`}
                             <div className="bg-white rounded-full p-2.5 shadow-md border-[0.7px]">
                                 <User2 className="size-5" />
                             </div>

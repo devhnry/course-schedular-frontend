@@ -1,92 +1,185 @@
-import Button from "../../shared/Button.tsx";
-import {ArchiveIcon} from "lucide-react";
-import {useDapuDashboard} from "../../../store/useDapuDashboard.ts";
-import {useDepartments} from "../../../hooks/useDepartments.ts";
-import {useEffect} from "react";
-import {useHods} from "../../../hooks/useHods.ts";
-import {useVenues} from "../../../hooks/useVenue.ts";
-import {usePrograms} from "../../../hooks/useProgram.ts";
+import {useDapuDashboard} from "../../../store/useDapuDashboard.ts"
+import {useDepartments} from "../../../hooks/useDepartments.ts"
+import {useEffect} from "react"
+import {useHods} from "../../../hooks/useHods.ts"
+import {useVenues} from "../../../hooks/useVenue.ts"
+import {usePrograms} from "../../../hooks/useProgram.ts"
+import {useCollegeBuildings} from "../../../hooks/useCollegeBuilding.ts"
+import StatsCard from "../common/StatsCard.tsx"
+import QuickActionCard from "../common/QuickActionCard.tsx"
+import {AlertTriangle, Book, Building2, Calendar, Landmark, MapPin, UserCheck, Users} from "lucide-react"
 
 const DashboardOverview = () => {
-    const { refetch , departments } = useDepartments()
-    const { data, refresh: refreshHod } = useHods()
-    const { venues } = useVenues()
-    const { programs } = usePrograms()
+  const { refetch, departments } = useDepartments()
+  const { data, refresh: refreshHod } = useHods()
+  const { venues } = useVenues()
+  const { programs } = usePrograms()
+  const { buildings } = useCollegeBuildings()
+  const { setSelectedIndex } = useDapuDashboard()
 
-    useEffect(() => {
-        refetch().catch(err => console.error(err));
-        refreshHod().catch(err => console.error(err));
-    }, []);
+  useEffect(() => {
+    refetch().catch((err) => console.error(err))
+    refreshHod().catch((err) => console.error(err))
+  }, [])
 
-    const overviewTabs = [
-        {
-            title: "Total Departments",
-            number: departments?.length
-        },
-        {
-            title: "Total Venues",
-            number: venues?.length
-        },
-        {
-            title: "Total HODs",
-            number: data?.content.length
-        },
-        {
-            title: "Total Programs",
-            number: programs?.length
-        }
-    ];
-    const quickActions = ["Invite New Hod", "Generate Timetable"];
+  // Calculate stats
+  // const totalHods = data?.content.length || 0
+  const activeHods = data?.content.filter((hod) => hod.status === "ACCEPTED").length || 0
+  const pendingHods = data?.content.filter((hod) => hod.status === "PENDING").length || 0
+  const availableVenues = venues?.filter((venue) => venue.available).length || 0
 
+  const stats = [
+    {
+      title: "Total Departments",
+      value: departments?.length || 0,
+      icon: Landmark,
+      color: "blue" as const,
+      subtitle: "University departments",
+    },
+    {
+      title: "Active HODs",
+      value: activeHods,
+      icon: UserCheck,
+      color: "green" as const,
+      subtitle: `${pendingHods} pending invitations`,
+    },
+    {
+      title: "Available Venues",
+      value: availableVenues,
+      icon: MapPin,
+      color: "purple" as const,
+      subtitle: `${venues?.length || 0} total venues`,
+    },
+    {
+      title: "Academic Programs",
+      value: programs?.length || 0,
+      icon: Book,
+      color: "orange" as const,
+      subtitle: "Across all departments",
+    },
+    {
+      title: "College Buildings",
+      value: buildings?.length || 0,
+      icon: Building2,
+      color: "blue" as const,
+      subtitle: "Campus infrastructure",
+    },
+    {
+      title: "Total Venues",
+      value: venues?.length || 0,
+      icon: MapPin,
+      color: "green" as const,
+      subtitle: "Lecture halls & rooms",
+    },
+  ]
 
-    const { setSelectedIndex } = useDapuDashboard();
-    const actionHandlers = [
-        () => setSelectedIndex(1), // Invite New Hod → ManageHods
-        () => setSelectedIndex(2), // Generate Timetable → Timetables
-    ];
+  const quickActions = [
+    {
+      title: "Invite New HOD",
+      description: "Send invitation to department heads",
+      icon: Users,
+      color: "blue" as const,
+      onClick: () => setSelectedIndex(1),
+    },
+    {
+      title: "Add Department",
+      description: "Create a new university department",
+      icon: Landmark,
+      color: "green" as const,
+      onClick: () => setSelectedIndex(4),
+    },
+    {
+      title: "Add Venue",
+      description: "Register new lecture halls or rooms",
+      icon: MapPin,
+      color: "purple" as const,
+      onClick: () => setSelectedIndex(3),
+    },
+    {
+      title: "Generate Timetable",
+      description: "Create optimized course schedules",
+      icon: Calendar,
+      color: "orange" as const,
+      onClick: () => setSelectedIndex(2),
+    },
+  ]
 
+  return (
+      <div className="space-y-6 p-6">
+        {/* Page Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+          <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your timetable system.</p>
+        </div>
 
-    return (
-        <main className={`dashboard-overview mt-6 grid gap-6`}>
-            <div className={`w-full bg-white border-[0.2px] border-black/20 shadow-md rounded-md h-[200px] p-4`}>
-                <h2 className={`text-lg font-bold mb-4`}>Overview</h2>
-                <div className={`grid grid-cols-4 gap-2`}>
-                    {
-                        overviewTabs.map((tab, index) => (
-                            <div key={index} className={`bg-gray-100/50 shadow-sm w-full h-[110px] rounded-md p-3`}>
-                                <p className={`font-bold mb-2`}>{tab.title}</p>
-                                <p className={`text-3xl font-bold`}>{tab.number}</p>
-                            </div>
-                        ))
-                    }
-                </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {stats.map((stat, index) => (
+              <StatsCard key={index} {...stat} />
+          ))}
+        </div>
+
+        {/* System Health Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Quick Actions */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {quickActions.map((action, index) => (
+                  <QuickActionCard key={index} {...action} />
+              ))}
             </div>
+          </div>
 
-            <div className={`w-full bg-white border-[0.2px] border-black/20 shadow-md rounded-md h-[140px] p-4`}>
-                <h2 className={`text-lg font-bold mb-3`}>Quick Actions</h2>
-                <div className={`grid grid-cols-2 gap-2`}>
-                    {
-                        quickActions.map((action, index) => (
-                            <Button
-                                key={index}
-                                classname={`bg-black text-white font-bold text-[18px] p-4`}
-                                text={action}
-                                onClick={actionHandlers[index]} // ✅ Wire up
-                            />
-                        ))
-                    }
+          {/* System Status */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">System Status</h2>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">HOD Management</span>
                 </div>
-            </div>
-
-            <div className={`w-full bg-white border-[0.2px] border-black/20 shadow-md rounded-md h-[270px] p-4`}>
-                <h2 className={`text-lg font-bold`}>Recent Activities</h2>
-                <div className={`grid place-items-center gap-2 font-bold text-3xl mt-16`}>
-                    <ArchiveIcon size={50} />
-                    <p>Page Coming Soon</p>
+                <span className="text-sm text-green-600 font-medium">Operational</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Venue Management</span>
                 </div>
+                <span className="text-sm text-green-600 font-medium">Operational</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Timetable Generation</span>
+                </div>
+                <span className="text-sm text-yellow-600 font-medium">In Development</span>
+              </div>
+              {pendingHods > 0 && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="w-3 h-3 text-orange-500" />
+                      <span className="text-sm text-gray-700">Pending HOD Invitations</span>
+                    </div>
+                    <span className="text-sm text-orange-600 font-medium">{pendingHods}</span>
+                  </div>
+              )}
             </div>
-        </main>
-    );
-};
+          </div>
+        </div>
 
-export default DashboardOverview;
+        {/* Recent Activities Placeholder */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h2>
+          <div className="text-center py-8">
+            <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Coming Soon</h3>
+            <p className="text-gray-500">Activity tracking will be available in a future update.</p>
+          </div>
+        </div>
+      </div>
+  )
+}
+
+export default DashboardOverview

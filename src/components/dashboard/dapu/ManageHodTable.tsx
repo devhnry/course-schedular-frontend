@@ -10,7 +10,7 @@ export default function ManageHodTable() {
                 return <CheckCircle className="h-4 w-4 text-green-500" />
             case "PENDING":
                 return <Clock className="h-4 w-4 text-yellow-500" />
-            case "REJECTED":
+            case "EXPIRED":
                 return <XCircle className="h-4 w-4 text-red-500" />
             default:
                 return <Clock className="h-4 w-4 text-gray-500" />
@@ -23,7 +23,7 @@ export default function ManageHodTable() {
                 return `${baseClasses} bg-green-100 text-green-800`
             case "PENDING":
                 return `${baseClasses} bg-yellow-100 text-yellow-800`
-            case "REJECTED":
+            case "EXPIRED":
                 return `${baseClasses} bg-red-100 text-red-800`
             default:
                 return `${baseClasses} bg-gray-100 text-gray-800`
@@ -109,9 +109,9 @@ export default function ManageHodTable() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <button
-                                        onClick={() => deleteHod(h.userId!)}
-                                        disabled={h.status !== "ACCEPTED"}
-                                        className={`inline-flex ${h.status !== 'ACCEPTED' ? 'cursor-not-allowed text-red-600/50 ' : 'cursor-pointer text-red-600 hover:bg-red-100 hover:border-red-300'} items-center gap-1 px-3 py-1.5 text-sm font-medium bg-red-50 border border-red-200 rounded-md  transition-colors focus:outline-none`}
+                                        onClick={() => deleteHod(h.userId ?? h.emailAddress)}
+                                        disabled={h.status === "PENDING"}
+                                        className={`inline-flex ${h.status === 'PENDING' ? 'cursor-not-allowed text-red-600/50 ' : 'cursor-pointer text-red-600 hover:bg-red-100 hover:border-red-300'} items-center gap-1 px-3 py-1.5 text-sm font-medium bg-red-50 border border-red-200 rounded-md  transition-colors focus:outline-none`}
                                     >
                                         <Trash2 className="h-4 w-4" />
                                         Delete

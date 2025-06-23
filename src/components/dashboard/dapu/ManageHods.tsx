@@ -1,27 +1,36 @@
-import InviteHodForm from "./InviteHodForm.tsx";
-import ManageHodTable from "./ManageHodTable.tsx";
+import InviteHodForm from "./InviteHodForm.tsx"
+import ManageHodTable from "./ManageHodTable.tsx"
+import PageHeader from "../common/PageHeader.tsx"
+import {Users} from "lucide-react"
 
 const ManageHods = () => {
-    return (
-        <section className="overflow-y-auto pr-2 h-full">
-            <section className={`my-4 p-8 py-4 border-[0.7px] rounded-lg h-fit border-black/20`}>
-                <div className={`pb-6`}>
-                    <h1 className={`text-[26px] font-bold`}>Invite New HOD</h1>
-                    <p className={`font-body text-[14px]`}>Send an invitation to a new Head of Department</p>
-                </div>
-                <InviteHodForm />
-            </section>
+  return (
+    <div className="p-6 space-y-6">
+      <PageHeader
+        title="Manage HODs"
+        description="Invite and manage Head of Department access and permissions"
+        icon={Users}
+      />
 
-            <section className={`my-4 p-8 py-4 border-[0.7px] rounded-lg h-fit border-black/20`}>
-                <div className={`pb-6`}>
-                    <h1 className={`text-[26px] font-bold`}>Manage HODs</h1>
-                    <p className={`font-body text-[14px]`}>Manage head of department access and permissions</p>
-                </div>
-                <ManageHodTable />
-            </section>
+      {/* Invite New HOD Section */}
+      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6">
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900">Invite New HOD</h2>
+          <p className="text-sm text-gray-600 mt-1">Send an invitation to a new Head of Department</p>
+        </div>
+        <InviteHodForm />
+      </div>
 
-        </section>
-    );
-};
+      {/* Manage HODs Section */}
+      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6">
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900">Current HODs</h2>
+          <p className="text-sm text-gray-600 mt-1">View and manage existing head of departments</p>
+        </div>
+        <ManageHodTable />
+      </div>
+    </div>
+  )
+}
 
-export default ManageHods;
+export default ManageHods

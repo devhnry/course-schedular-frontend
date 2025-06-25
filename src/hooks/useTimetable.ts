@@ -49,7 +49,7 @@ export const useTimetable = () => {
         setError(null)
 
         try {
-            const response = await apiClient.get("/test/scheduler/run")
+            const response = await apiClient.get("/timetable/generate")
             console.log("Raw API Response:", response.data)
 
             // Handle the specific API response structure

@@ -7,7 +7,7 @@ import {usePrograms} from "../../../hooks/useProgram.ts"
 import {useCollegeBuildings} from "../../../hooks/useCollegeBuilding.ts"
 import StatsCard from "../common/StatsCard.tsx"
 import QuickActionCard from "../common/QuickActionCard.tsx"
-import {AlertTriangle, Book, Building2, Calendar, Landmark, MapPin, UserCheck, Users} from "lucide-react"
+import { Book, Building2, Calendar, Landmark, MapPin, UserCheck, Users } from "lucide-react"
 
 const DashboardOverview = () => {
   const { refetch, departments } = useDepartments()
@@ -120,11 +120,11 @@ const DashboardOverview = () => {
         </div>
 
         {/* System Health Overview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
           {/* Quick Actions */}
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {quickActions.map((action, index) => (
                   <QuickActionCard key={index} {...action} />
               ))}
@@ -132,52 +132,52 @@ const DashboardOverview = () => {
           </div>
 
           {/* System Status */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">System Status</h2>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-700">HOD Management</span>
-                </div>
-                <span className="text-sm text-green-600 font-medium">Operational</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-700">Venue Management</span>
-                </div>
-                <span className="text-sm text-green-600 font-medium">Operational</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <span className="text-sm text-gray-700">Timetable Generation</span>
-                </div>
-                <span className="text-sm text-yellow-600 font-medium">In Development</span>
-              </div>
-              {pendingHods > 0 && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <AlertTriangle className="w-3 h-3 text-orange-500" />
-                      <span className="text-sm text-gray-700">Pending HOD Invitations</span>
-                    </div>
-                    <span className="text-sm text-orange-600 font-medium">{pendingHods}</span>
-                  </div>
-              )}
-            </div>
-          </div>
+          {/*<div className="bg-white rounded-lg border border-gray-200 p-6">*/}
+          {/*  <h2 className="text-lg font-semibold text-gray-900 mb-4">System Status</h2>*/}
+          {/*  <div className="space-y-4">*/}
+          {/*    <div className="flex items-center justify-between">*/}
+          {/*      <div className="flex items-center gap-3">*/}
+          {/*        <div className="w-3 h-3 bg-green-500 rounded-full"></div>*/}
+          {/*        <span className="text-sm text-gray-700">HOD Management</span>*/}
+          {/*      </div>*/}
+          {/*      <span className="text-sm text-green-600 font-medium">Operational</span>*/}
+          {/*    </div>*/}
+          {/*    <div className="flex items-center justify-between">*/}
+          {/*      <div className="flex items-center gap-3">*/}
+          {/*        <div className="w-3 h-3 bg-green-500 rounded-full"></div>*/}
+          {/*        <span className="text-sm text-gray-700">Venue Management</span>*/}
+          {/*      </div>*/}
+          {/*      <span className="text-sm text-green-600 font-medium">Operational</span>*/}
+          {/*    </div>*/}
+          {/*    <div className="flex items-center justify-between">*/}
+          {/*      <div className="flex items-center gap-3">*/}
+          {/*        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>*/}
+          {/*        <span className="text-sm text-gray-700">Timetable Generation</span>*/}
+          {/*      </div>*/}
+          {/*      <span className="text-sm text-yellow-600 font-medium">In Development</span>*/}
+          {/*    </div>*/}
+          {/*    {pendingHods > 0 && (*/}
+          {/*        <div className="flex items-center justify-between">*/}
+          {/*          <div className="flex items-center gap-3">*/}
+          {/*            <AlertTriangle className="w-3 h-3 text-orange-500" />*/}
+          {/*            <span className="text-sm text-gray-700">Pending HOD Invitations</span>*/}
+          {/*          </div>*/}
+          {/*          <span className="text-sm text-orange-600 font-medium">{pendingHods}</span>*/}
+          {/*        </div>*/}
+          {/*    )}*/}
+          {/*  </div>*/}
+          {/*</div>*/}
         </div>
 
         {/* Recent Activities Placeholder */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h2>
-          <div className="text-center py-8">
-            <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Coming Soon</h3>
-            <p className="text-gray-500">Activity tracking will be available in a future update.</p>
-          </div>
-        </div>
+        {/*<div className="bg-white rounded-lg border border-gray-200 p-6">*/}
+        {/*  <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h2>*/}
+        {/*  <div className="text-center py-8">*/}
+        {/*    <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />*/}
+        {/*    <h3 className="text-lg font-medium text-gray-900 mb-2">Coming Soon</h3>*/}
+        {/*    <p className="text-gray-500">Activity tracking will be available in a future update.</p>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
       </div>
   )
 }

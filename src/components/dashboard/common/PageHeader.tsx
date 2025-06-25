@@ -11,7 +11,7 @@ interface PageHeaderProps {
 
 const PageHeader = ({ title, description, icon: Icon, actions, breadcrumbs }: PageHeaderProps) => {
   return (
-    <div className="border-b border-gray-200 pb-6 mb-6">
+    <div className="border-b border-gray-200 pb-6 mb-4">
       {breadcrumbs && (
         <nav className="flex mb-4" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">

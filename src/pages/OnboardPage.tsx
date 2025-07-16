@@ -12,11 +12,6 @@ const OnboardPage = () => {
     const { register, handleSubmit } = useForm<Omit<OnboardRequestDto, "emailAddress">>();
     const { onboard } = useOnboard();
 
-    // useEffect(() => {
-    //     setInvitedEmail("devthenry@gmail.com");
-    //     setInvitedDepartment("CIS")
-    // }, [setInvitedEmail]);
-
     const handleOnboard = async (data: Omit<OnboardRequestDto, "emailAddress">) => {
         if (!invitedEmail) {
             toast.error("Missing email. Please return to invite link.");

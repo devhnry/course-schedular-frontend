@@ -24,7 +24,7 @@ const TextInput: FC<TextInputProps> = ({label, type="text", placeholder, registe
                 </div>
             )}
             <input
-                {...register(name, { required: true })}
+                {...register(name)}
                 type={showToggle ? (show ? "text" : "password") : type}
                 placeholder={placeholder}
                 className="w-full border p-3 border-black/20 outline-none rounded-md text-sm placeholder:text-gray-500/80"

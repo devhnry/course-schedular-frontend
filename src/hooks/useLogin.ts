@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {login as loginRequest, logoutApi, resendOtpApi, verifyLoginOtp} from "../api/auth";
 import {useAuthStore} from "../store/useAuthStore";
-import {LoginInput, loginSchema, OtpInput, otpSchema} from "../schemas/authSchema";
+import {LoginInput, OtpInput, otpSchema} from "../schemas/authSchema";
 import {AuthStatusCode, LoginResponse, LogoutResponse} from "../types/auth.ts";
 import toast from "react-hot-toast";
 import {AxiosError} from "axios";
@@ -13,15 +13,6 @@ export function useLogin() {
     const { setAuthEmail, setOtpType, setToken, setRole, setFullName } = useAuthStore();
 
     const login = async (data: LoginInput): Promise<"otp" | null> => {
-        const parsed = loginSchema.safeParse(data);
-        if (!parsed.success) {
-            const firstIssue = parsed.error.issues[0];
-            toast.error(firstIssue.message, {
-                duration: 3000
-            });
-            return null;
-        }
-
         try {
             setLoading(true);
             const response = await loginRequest(data);

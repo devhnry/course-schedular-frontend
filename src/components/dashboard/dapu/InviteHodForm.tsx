@@ -24,7 +24,7 @@ const InviteHodForm = () => {
         }
         data.departmentCode = selectedDept.code;
         await sendInvite(data);
-        await refresh();
+        await refresh().then(r => console.info(r));
         setSelectedDept(null);
 
         reset();

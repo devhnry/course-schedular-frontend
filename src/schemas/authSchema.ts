@@ -2,7 +2,11 @@ import {z} from "zod";
 import {passwordSchema} from "./common/passwordSchema.ts";
 
 export const loginSchema = z.object({
-    email: z.string().email("Invalid email address"),
+    email: z
+        .string()
+        .trim()
+        .min(1, { message: "Email is required" })
+        .email("Invalid email address"),
     password: passwordSchema
 });
 

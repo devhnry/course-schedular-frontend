@@ -11,7 +11,7 @@ export const useHods = (initialPage = 0, initialSize = 10) => {
     const [error, setError]     = useState<string | null>(null);
 
     useEffect(() => {
-        fetchPage(page);
+        fetchPage(page).then(r => console.info(r)).catch(e => console.error(e));
     }, [page]);
 
     const fetchPage = async (p: number) => {

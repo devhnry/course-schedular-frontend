@@ -14,7 +14,7 @@ const Button: FC<ButtonProps> = ({ text, type, classname = 'p-1.5 px-3 hover:sca
     const navigate = useNavigate();
     const handleClick = () => {
         if (to) { navigate(to);
-        } else if (onClick) { onClick();}
+        } else if (onClick) { onClick() }
     };
 
     return (

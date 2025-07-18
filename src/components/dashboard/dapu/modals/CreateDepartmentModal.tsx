@@ -7,6 +7,7 @@ import Button from "../../../shared/Button"
 import TextInput from "../../../shared/TextInput"
 import toast from "react-hot-toast"
 import type {DepartmentRequestDto} from "../../../../types/department"
+import PortalDropdown from "../../common/PortalDropdown.tsx";
 
 interface CreateDepartmentModalProps {
     isOpen: boolean
@@ -16,10 +17,12 @@ interface CreateDepartmentModalProps {
 
 const CreateDepartmentModal = ({ isOpen, onClose, onSuccess }: CreateDepartmentModalProps) => {
     const [loading, setLoading] = useState(false)
-    const { create } = useDepartments()
+    const { create, refetch } = useDepartments()
     const { buildings } = useCollegeBuildings()
     const {
         register,
+        watch,
+        setValue,
         handleSubmit,
         reset,
         formState: { errors },
@@ -31,6 +34,7 @@ const CreateDepartmentModal = ({ isOpen, onClose, onSuccess }: CreateDepartmentM
             await create(data)
             toast.success("Department created successfully!")
             reset()
+            refetch().catch(e => console.error(e))
             onSuccess?.()
             onClose()
         } catch (error: any) {
@@ -59,21 +63,18 @@ const CreateDepartmentModal = ({ isOpen, onClose, onSuccess }: CreateDepartmentM
                     <TextInput label="Department Code" name="code" placeholder="e.g., CSC" register={register} />
                     {errors.code && <p className="text-red-500 text-sm">{errors.code.message}</p>}
 
-                    <div>
-                        <label className="text-sm mb-1 block">College Building</label>
-                        <select
-                            {...register("collegeBuildingCode", { required: "College Building is required" })}
-                            className="w-full border p-3 border-black/20 outline-none rounded-md text-sm"
-                        >
-                            <option value="">Select College Building</option>
-                            {buildings.map((building) => (
-                                <option key={building.id} value={building.code}>
-                                    {building.name} ({building.code})
-                                </option>
-                            ))}
-                        </select>
-                        {errors.collegeBuildingCode && <p className="text-red-500 text-sm">{errors.collegeBuildingCode.message}</p>}
-                    </div>
+                    <PortalDropdown
+                        name="collegeBuildingCode"
+                        label="College Building"
+                        value={watch("collegeBuildingCode")}
+                        onChange={(e) => setValue("collegeBuildingCode", e.target.value)}
+                        options={buildings.map((b) => ({
+                            value: b.code,
+                            label: `${b.name} (${b.code})`,
+                        }))}
+                        error={errors.collegeBuildingCode?.message}
+                        placeholder="Choose a building"
+                    />
 
                     <div className="flex gap-3 pt-4">
                         <Button

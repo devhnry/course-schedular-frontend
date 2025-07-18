@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {
     createDepartment,
     deleteDepartment,
@@ -6,13 +6,12 @@ import {
     getDepartments,
     updateDepartment
 } from "../api/clients/departmentClient.ts";
-import {DepartmentRequestDto, DepartmentResponseDto} from "../types/department.ts";
+import {DepartmentRequestDto} from "../types/department.ts";
 import {AxiosError} from "axios";
+import {useDepartmentStore} from "../store/useDepartmentStore.ts";
 
 export const useDepartments = () => {
-    const [departments, setDepartments] = useState<DepartmentResponseDto[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { departments, setDepartments, loading, setLoading, error, setError } = useDepartmentStore();
 
     const fetchAll = async () => {
         setLoading(true);

@@ -6,34 +6,57 @@ import DataTable from "../common/DataTable.tsx"
 import PageHeader from "../common/PageHeader.tsx"
 import CreateDepartmentModal from "./modals/CreateDepartmentModal.tsx"
 import EditDepartmentModal from "./modals/EditDepartmentModal.tsx"
-import {Edit, Landmark, Trash2} from "lucide-react"
+import { Landmark, Trash2} from "lucide-react"
 import type {DepartmentResponseDto} from "../../../types/department.ts"
+import {useDepartmentStore} from "../../../store/useDepartmentStore.ts";
+import ConfirmDeleteModal from "../../shared/ConfirmDeleteModal.tsx";
 
 const DepartmentView = () => {
-  const { departments, loading, error, remove } = useDepartments()
+  const { remove, refetch } = useDepartments()
+    const { departments, loading, error } = useDepartmentStore()
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedDepartment, setSelectedDepartment] = useState<DepartmentResponseDto | null>(null)
 
-  const handleEdit = (dept: DepartmentResponseDto) => {
-    setSelectedDepartment(dept)
-    setShowEditModal(true)
-  }
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+    const [deleteContext, setDeleteContext] = useState<{ label: string; name: string; onConfirm: () => void } | null>(null)
 
-  const handleDelete = async (dept: DepartmentResponseDto) => {
-    if (window.confirm(`Are you sure you want to delete ${dept.name}?`)) {
-      await remove(dept.id)
-      toast.success("Department deleted successfully")
+  // const handleEdit = (dept: DepartmentResponseDto) => {
+  //   setSelectedDepartment(dept)
+  //   setShowEditModal(true)
+  // }
+    const handleCreateSuccess = () => {
+      setShowCreateModal(false)
+
     }
-  }
+
+    const handleDelete = (department: DepartmentResponseDto) => {
+        setDeleteContext({
+            label: "Department",
+            name: department.name,
+            onConfirm: async () => {
+                try {
+                    await remove(department.id)
+                    toast.success("Department deleted successfully")
+                } catch (error: any) {
+                    toast.error(error?.response?.data?.statusMessage || "Failed to delete department")
+                } finally {
+                    setDeleteContext(null)
+                    setShowConfirmDelete(false)
+                    refetch().catch(e => console.error(e))
+                }
+            },
+        })
+        setShowConfirmDelete(true)
+    }
 
   const columns = [
-    {
-      key: "index",
-      label: "#",
-      render: (_: any, index: number) => index + 1,
-      className: "w-16",
-    },
+    // {
+    //   key: "index",
+    //   label: "#",
+    //   render: (_: any, index: number) => index + 1,
+    //   className: "w-16",
+    // },
     {
       key: "name",
       label: "Name",
@@ -55,12 +78,15 @@ const DepartmentView = () => {
   ]
 
   const actions = [
-    {
-      label: "Edit",
-      onClick: handleEdit,
-      icon: <Edit size={16} />,
-      className: "text-gray-700 hover:text-gray-900",
-    },
+
+      // Removed Edit to not break Code
+
+    // {
+    //   label: "Edit",
+    //   onClick: handleEdit,
+    //   icon: <Edit size={16} />,
+    //   className: "text-gray-700 hover:text-gray-900",
+    // },
     {
       label: "Delete",
       onClick: handleDelete,
@@ -108,7 +134,7 @@ const DepartmentView = () => {
             isOpen={showCreateModal}
             onClose={() => setShowCreateModal(false)}
             onSuccess={() => {
-              // Data will be refreshed automatically by the hook
+              handleCreateSuccess()
             }}
         />
 
@@ -123,6 +149,28 @@ const DepartmentView = () => {
               // Data will be refreshed automatically by the hook
             }}
         />
+
+          {showConfirmDelete && deleteContext && (
+              <ConfirmDeleteModal
+                  isOpen={showConfirmDelete}
+                  itemLabel={deleteContext.label}
+                  itemName={deleteContext.name}
+                  onClose={() => {
+                      setShowConfirmDelete(false)
+                      setDeleteContext(null)
+                  }}
+                  onConfirm={deleteContext.onConfirm}
+              />
+          )}
+
+          {/* Debug info */}
+          {process.env.NODE_ENV === "development" && (
+              <div className="fixed bottom-4 right-4 bg-black/70 text-white p-2 text-xs rounded">
+                  <div>Departments: {departments.length}</div>
+                  <div>Editing: {showEditModal.toString()}</div>
+                  <div>Selected: {selectedDepartment?.name || "none"}</div>
+              </div>
+          )}
       </div>
   )
 }

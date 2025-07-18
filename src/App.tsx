@@ -1,7 +1,11 @@
 import AppRoutes from "./routes/routes.tsx";
 import {Toaster} from "react-hot-toast";
+import {useSessionManager} from "./hooks/useSessionManager.ts";
 
 function App() {
+    // Initialize session management
+    useSessionManager()
+
   return (
       <>
         <Toaster

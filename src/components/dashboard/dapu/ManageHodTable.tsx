@@ -1,8 +1,10 @@
-import {useHods} from "../../../hooks/useHods.ts"
 import {CheckCircle, ChevronLeft, ChevronRight, Clock, Loader2, Mail, Trash2, XCircle} from "lucide-react"
+import {useHodStore} from "../../../store/useHodStore.ts";
+import {useHods} from "../../../hooks/useHods.ts";
 
 export default function ManageHodTable() {
-    const { data, loading, error, page, setPage, updateAccess, deleteHod } = useHods(0, 10)
+    const { data, loading, error, page, setPage } = useHodStore()
+    const { updateAccess, deleteHod } = useHods()
 
     const getStatusIcon = (status: string) => {
         switch (status) {
@@ -111,7 +113,7 @@ export default function ManageHodTable() {
                                     <button
                                         onClick={() => deleteHod(h.userId ?? h.emailAddress)}
                                         disabled={h.status === "PENDING"}
-                                        className={`inline-flex ${h.status === 'PENDING' ? 'cursor-not-allowed text-red-600/50 ' : 'cursor-pointer text-red-600 hover:bg-red-100 hover:border-red-300'} items-center gap-1 px-3 py-1.5 text-sm font-medium bg-red-50 border border-red-200 rounded-md  transition-colors focus:outline-none`}
+                                        className={`inline-flex ${h.status === 'PENDING' ? 'cursor-not-allowed text-red-600/50 ' : 'text-red-600 hover:bg-red-100 hover:border-red-300 cursor-pointer'} items-center gap-1 px-3 py-1.5 text-sm font-medium bg-red-50 border border-red-200 rounded-md  transition-colors focus:outline-none`}
                                     >
                                         <Trash2 className="h-4 w-4" />
                                         Delete

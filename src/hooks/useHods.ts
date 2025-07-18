@@ -1,87 +1,134 @@
-import {useEffect, useState} from "react";
-import {hodClient} from "../api/clients/hodClient.ts";
-import {HodManagementDto, PageResponse} from "../types/hod";
-import {AxiosError} from "axios";
+import { useEffect } from "react"
+import { hodClient } from "../api/clients/hodClient.ts"
+import type { AxiosError } from "axios"
+import toast from "react-hot-toast"
+import {useHodStore} from "../store/useHodStore.ts";
+import {HodManagementDto, PageResponse} from "../types/hod.ts";
 
-export const useHods = (initialPage = 0, initialSize = 10) => {
-    const [page, setPage] = useState<number>(initialPage);
-    const [size] = useState<number>(initialSize);
-    const [data, setData] = useState<PageResponse<HodManagementDto> | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError]     = useState<string | null>(null);
+export const useHods = () => {
+    const { page, size, data, loading, error, setLoading, setError, setData, setPage } = useHodStore()
 
     useEffect(() => {
-        fetchPage(page).then(r => console.info(r)).catch(e => console.error(e));
-    }, [page]);
+        fetchPage(page)
+    }, [page])
 
     const fetchPage = async (p: number) => {
-        setLoading(true);
+        setLoading(true)
+        setError(null)
+
         try {
-            const allData = await hodClient.list(); // ignore p, size
-            const start = p * size;
-            const content = allData.slice(start, start + size);
+            const allData = await hodClient.list()
+            const start = p * size
+            const content = allData.slice(start, start + size)
+
             setData({
                 content,
                 totalElements: allData.length,
                 totalPages: Math.ceil(allData.length / size),
                 size,
                 number: p,
-            });
-            setError(null);
+            })
         } catch (err) {
-            const error = err as AxiosError<{ statusMessage: string }>;
-            setError(error.response?.data?.statusMessage || "Failed to update access");
+            const error = err as AxiosError<{ statusMessage: string }>
+            const errorMessage = error.response?.data?.statusMessage || "Failed to fetch HODs"
+            setError(errorMessage)
+            console.error("Failed to fetch HODs:", error)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const updateAccess = async (userId: string, write: boolean) => {
-        setLoading(true);
         try {
-            const updated = await hodClient.updateAccess(userId, write);
-            // update in-place if loaded
-            setData((d) => {
-                if (!d) return d;
+            const updated = await hodClient.updateAccess(userId, write)
+
+            // Update in-place if loaded
+            setData((prevData) => {
+                const fallback: PageResponse<HodManagementDto> = {
+                    content: [],
+                    totalElements: 0,
+                    totalPages: 0,
+                    number: 0,
+                    size: 10,
+                }
+
+                const current = prevData ?? fallback
+
                 return {
-                    ...d,
-                    content: d.content.map((h) =>
-                        h.userId === userId ? updated : h
+                    ...current,
+                    content: current.content.map((hod) =>
+                        hod.userId === userId ? updated : hod
                     ),
-                };
-            });
-        }  catch (err) {
-            const error = err as AxiosError<{ statusMessage: string }>;
-            setError(error.response?.data?.statusMessage || "Failed to update access");
-        } finally {
-            setLoading(false);
+                }
+            })
+
+
+            toast.success(`HOD access ${write ? "granted" : "revoked"} successfully`)
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>
+            const errorMessage = error.response?.data?.statusMessage || "Failed to update access"
+            setError(errorMessage)
+            toast.error(errorMessage)
+            console.error("Failed to update HOD access:", error)
         }
-    };
+    }
 
     const deleteHod = async (userId: string | null) => {
         if (!userId) {
-            setError("Cannot delete a HOD that hasn't signed up yet.");
-            return;
+            const errorMessage = "Cannot delete a HOD that hasn't signed up yet."
+            setError(errorMessage)
+            toast.error(errorMessage)
+            return
         }
 
-        setLoading(true);
         try {
-            await hodClient.delete(userId);
-            setData((d) => {
-                if (!d) return d;
-                return {
-                    ...d,
-                    content: d.content.filter((h) => h.userId !== userId),
-                };
-            });
-        } catch (err) {
-            const error = err as AxiosError<{ statusMessage: string }>;
-            setError(error.response?.data?.statusMessage || "Failed to delete HOD.");
-        } finally {
-            setLoading(false);
-        }
-    };
+            await hodClient.delete(userId)
 
-    return { data,  loading,  error,  page,  setPage,  updateAccess,  deleteHod,  refresh: () => fetchPage(page),
-    };
-};
+            // Remove from local state
+            setData((prevData) => {
+                const fallback: PageResponse<HodManagementDto> = {
+                    content: [],
+                    totalElements: 0,
+                    totalPages: 0,
+                    number: 0,
+                    size: size, // use current size from store
+                }
+
+                const current = prevData ?? fallback
+                const newContent = current.content.filter(hod => hod.userId !== userId)
+                const newTotalElements = current.totalElements - 1
+                const newTotalPages = Math.ceil(newTotalElements / current.size)
+
+                return {
+                    ...current,
+                    content: newContent,
+                    totalElements: newTotalElements,
+                    totalPages: newTotalPages,
+                }
+            })
+
+            toast.success("HOD deleted successfully")
+        } catch (err) {
+            const error = err as AxiosError<{ statusMessage: string }>
+            const errorMessage = error.response?.data?.statusMessage || "Failed to delete HOD"
+            setError(errorMessage)
+            toast.error(errorMessage)
+            console.error("Failed to delete HOD:", error)
+        }
+    }
+
+    const refresh = async () => {
+        await fetchPage(0)
+    }
+
+    return {
+        data,
+        loading,
+        error,
+        page,
+        setPage,
+        updateAccess,
+        deleteHod,
+        refresh,
+    }
+}

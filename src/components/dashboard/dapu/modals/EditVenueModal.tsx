@@ -17,7 +17,7 @@ interface EditVenueModalProps {
 
 const EditVenueModal = ({ isOpen, onClose, onSuccess, venue }: EditVenueModalProps) => {
     const [loading, setLoading] = useState(false)
-    const { update } = useVenues()
+    const { update, refetch } = useVenues()
     const { buildings } = useCollegeBuildings()
     const {
         register,
@@ -44,6 +44,7 @@ const EditVenueModal = ({ isOpen, onClose, onSuccess, venue }: EditVenueModalPro
             await update(venue.id, data)
             toast.success("Venue updated successfully!")
             reset()
+            refetch().catch(e => console.error(e))
             onSuccess?.()
             onClose()
         } catch (error: any) {
@@ -56,7 +57,7 @@ const EditVenueModal = ({ isOpen, onClose, onSuccess, venue }: EditVenueModalPro
     if (!isOpen || !venue) return null
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bottom-0 bg-black/50 flex items-center justify-center z-50 h-full">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between p-6 border-b">
                     <h2 className="text-xl font-semibold text-gray-900">Edit Venue</h2>
@@ -78,7 +79,7 @@ const EditVenueModal = ({ isOpen, onClose, onSuccess, venue }: EditVenueModalPro
                             {...register("collegeBuildingCode", { required: "College Building is required" })}
                             className="w-full border p-3 border-black/20 outline-none rounded-md text-sm"
                         >
-                            <option value="">Select College Building</option>
+                            <option value={``} >Select College Building</option>
                             {buildings.map((building) => (
                                 <option key={building.id} value={building.code}>
                                     {building.name} ({building.code})

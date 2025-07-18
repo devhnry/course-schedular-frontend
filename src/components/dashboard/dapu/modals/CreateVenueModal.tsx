@@ -16,7 +16,7 @@ interface CreateVenueModalProps {
 
 const CreateVenueModal = ({ isOpen, onClose, onSuccess }: CreateVenueModalProps) => {
     const [loading, setLoading] = useState(false)
-    const { create } = useVenues()
+    const { create, refetch } = useVenues()
     const { buildings } = useCollegeBuildings()
     const {
         register,
@@ -31,6 +31,7 @@ const CreateVenueModal = ({ isOpen, onClose, onSuccess }: CreateVenueModalProps)
             await create(data)
             toast.success("Venue created successfully!")
             reset()
+            refetch().catch(e => console.error(e))
             onSuccess?.()
             onClose()
         } catch (error: any) {
@@ -52,17 +53,17 @@ const CreateVenueModal = ({ isOpen, onClose, onSuccess }: CreateVenueModalProps)
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-                    <TextInput label="Venue Name" name="name" placeholder="e.g., Lecture Theatre 1" register={register} />
-                    {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-3">
+                    <TextInput required={true} label="Venue Name" name="name" placeholder="e.g., Lecture Theatre 1" register={register} />
+                    {errors.name && <p className="text-red-500 text-sm -mt-2">{errors.name.message}</p>}
 
-                    <TextInput label="Capacity" name="capacity" type="number" placeholder="e.g., 150" register={register} />
-                    {errors.capacity && <p className="text-red-500 text-sm">{errors.capacity.message}</p>}
+                    <TextInput required={true} label="Capacity" name="capacity" type="number" placeholder="e.g., 150" register={register} />
+                    {errors.capacity && <p className="text-red-500 text-sm -mt-2">{errors.capacity.message}</p>}
 
                     <div>
                         <label className="text-sm mb-1 block">College Building</label>
                         <select
-                            {...register("collegeBuildingCode", { required: "College Building is required" })}
+                            {...register("collegeBuildingCode")}
                             className="w-full border p-3 border-black/20 outline-none rounded-md text-sm"
                         >
                             <option value="">Select College Building</option>

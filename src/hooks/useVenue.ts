@@ -43,7 +43,7 @@ export const useVenues = () => {
     };
 
     useEffect(() => {
-        fetchAll().then(r => console.log(r))
+        fetchAll()
             .finally(() => setLoading(false));
     }, []);
 

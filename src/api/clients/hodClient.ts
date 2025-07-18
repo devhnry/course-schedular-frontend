@@ -14,7 +14,7 @@ export const hodClient = {
         userId: string,
         write: boolean
     ): Promise<HodManagementDto> => {
-        const res = await apiClient.patch<{ data: HodManagementDto }>(
+        const res = await apiClient.put<{ data: HodManagementDto }>(
             `${BASE}/${userId}/access?write=${write}`
         );
         return res.data.data;

@@ -55,7 +55,6 @@ const VerifyOtpForm = () => {
     const onSubmit = async (data: OtpInput) => {
         data.oneTimePassword = finalOtp
         data.email = authEmail as string;
-        console.log(data);
 
         const result = await verifyOtp(data);
         console.log(result.status, otpType, result.role);

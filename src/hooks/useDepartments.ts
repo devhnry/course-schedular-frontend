@@ -49,7 +49,7 @@ export const useDepartments = () => {
     };
 
     useEffect(() => {
-        fetchAll().then(r => console.log(r))
+        fetchAll()
             .finally(() => setLoading(false));
     }, []);
 

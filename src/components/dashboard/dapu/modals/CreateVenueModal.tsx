@@ -7,6 +7,8 @@ import Button from "../../../shared/Button"
 import TextInput from "../../../shared/TextInput"
 import toast from "react-hot-toast"
 import type {VenueRequestDto} from "../../../../types/venue"
+// import CustomDropdown from "../../common/CustomDropdown.tsx";
+import PortalDropdown from "../../common/PortalDropdown.tsx";
 
 interface CreateVenueModalProps {
     isOpen: boolean
@@ -20,6 +22,8 @@ const CreateVenueModal = ({ isOpen, onClose, onSuccess }: CreateVenueModalProps)
     const { buildings } = useCollegeBuildings()
     const {
         register,
+        setValue,
+        watch,
         handleSubmit,
         reset,
         formState: { errors },
@@ -60,21 +64,18 @@ const CreateVenueModal = ({ isOpen, onClose, onSuccess }: CreateVenueModalProps)
                     <TextInput required={true} label="Capacity" name="capacity" type="number" placeholder="e.g., 150" register={register} />
                     {errors.capacity && <p className="text-red-500 text-sm -mt-2">{errors.capacity.message}</p>}
 
-                    <div>
-                        <label className="text-sm mb-1 block">College Building</label>
-                        <select
-                            {...register("collegeBuildingCode")}
-                            className="w-full border p-3 border-black/20 outline-none rounded-md text-sm"
-                        >
-                            <option value="">Select College Building</option>
-                            {buildings.map((building) => (
-                                <option key={building.id} value={building.code}>
-                                    {building.name} ({building.code})
-                                </option>
-                            ))}
-                        </select>
-                        {errors.collegeBuildingCode && <p className="text-red-500 text-sm">{errors.collegeBuildingCode.message}</p>}
-                    </div>
+                    <PortalDropdown
+                        name="collegeBuildingCode"
+                        label="College Building"
+                        value={watch("collegeBuildingCode")}
+                        onChange={(e) => setValue("collegeBuildingCode", e.target.value)}
+                        options={buildings.map((b) => ({
+                            value: b.code,
+                            label: `${b.name} (${b.code})`,
+                        }))}
+                        error={errors.collegeBuildingCode?.message}
+                        placeholder="Choose a building"
+                    />
 
                     <div className="flex items-center gap-3">
                         <input

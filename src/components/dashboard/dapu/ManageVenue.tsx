@@ -10,9 +10,11 @@ import EditVenueModal from "./modals/EditVenueModal"
 import { Edit, MapPin, Trash2 } from "lucide-react"
 import type { VenueResponseDto } from "../../../types/venue"
 import ConfirmDeleteModal from "../../shared/ConfirmDeleteModal.tsx";
+import {useVenueStore} from "../../../store/useVenueStore.ts";
 
 const ManageVenue: React.FC = () => {
-    const { venues, loading, error, remove } = useVenues()
+    const { venues, loading, error } = useVenueStore()
+    const { remove, refetch } = useVenues()
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
     const [selectedVenue, setSelectedVenue] = useState<VenueResponseDto | null>(null)
@@ -27,19 +29,6 @@ const ManageVenue: React.FC = () => {
         setShowEditModal(true)
     }
 
-    // const handleDelete = async (venue: VenueResponseDto) => {
-    //     console.log("Delete clicked for venue:", venue)
-    //     if (window.confirm(`Are you sure you want to delete ${venue.name}?`)) {
-    //         try {
-    //             await remove(venue.id)
-    //             toast.success("Venue deleted successfully")
-    //         } catch (error: any) {
-    //             console.error("Delete error:", error)
-    //             toast.error(error?.response?.data?.statusMessage || "Failed to delete venue")
-    //         }
-    //     }
-    // }
-
     const handleDelete = (venue: VenueResponseDto) => {
         setDeleteContext({
             label: "venue",
@@ -53,6 +42,7 @@ const ManageVenue: React.FC = () => {
                 } finally {
                     setDeleteContext(null)
                     setShowConfirmDelete(false)
+                    refetch().catch(e => console.error(e))
                 }
             },
         })
@@ -62,7 +52,7 @@ const ManageVenue: React.FC = () => {
 
     const handleCreateSuccess = () => {
         setShowCreateModal(false)
-        // toast.success("Venue created successfully")
+        refetch().catch(e => console.error(e))
     }
 
     const handleEditSuccess = () => {

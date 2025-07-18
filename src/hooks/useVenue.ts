@@ -1,12 +1,11 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {AxiosError} from "axios";
-import {VenueRequestDto, VenueResponseDto} from "../types/venue.ts";
+import {VenueRequestDto} from "../types/venue.ts";
 import {createVenue, deleteVenue, getVenueById, getVenues, updateVenue} from "../api/clients/venue.ts";
+import {useVenueStore} from "../store/useVenueStore.ts";
 
 export const useVenues = () => {
-    const [venues, setVenues ] = useState<VenueResponseDto[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { venues, setVenues, loading, setLoading, error, setError } = useVenueStore();
 
     const fetchAll = async () => {
         setLoading(true);

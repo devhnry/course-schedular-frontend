@@ -7,6 +7,7 @@ import Button from "../../../shared/Button"
 import TextInput from "../../../shared/TextInput"
 import toast from "react-hot-toast"
 import type {VenueRequestDto, VenueResponseDto} from "../../../../types/venue"
+import PortalDropdown from "../../common/PortalDropdown.tsx";
 
 interface EditVenueModalProps {
     isOpen: boolean
@@ -21,6 +22,7 @@ const EditVenueModal = ({ isOpen, onClose, onSuccess, venue }: EditVenueModalPro
     const { buildings } = useCollegeBuildings()
     const {
         register,
+        watch,
         handleSubmit,
         reset,
         setValue,
@@ -42,7 +44,6 @@ const EditVenueModal = ({ isOpen, onClose, onSuccess, venue }: EditVenueModalPro
         try {
             setLoading(true)
             await update(venue.id, data)
-            toast.success("Venue updated successfully!")
             reset()
             refetch().catch(e => console.error(e))
             onSuccess?.()
@@ -73,21 +74,18 @@ const EditVenueModal = ({ isOpen, onClose, onSuccess, venue }: EditVenueModalPro
                     <TextInput label="Capacity" name="capacity" type="number" placeholder="e.g., 150" register={register} />
                     {errors.capacity && <p className="text-red-500 text-sm">{errors.capacity.message}</p>}
 
-                    <div>
-                        <label className="text-sm mb-1 block">College Building</label>
-                        <select
-                            {...register("collegeBuildingCode", { required: "College Building is required" })}
-                            className="w-full border p-3 border-black/20 outline-none rounded-md text-sm"
-                        >
-                            <option value={``} >Select College Building</option>
-                            {buildings.map((building) => (
-                                <option key={building.id} value={building.code}>
-                                    {building.name} ({building.code})
-                                </option>
-                            ))}
-                        </select>
-                        {errors.collegeBuildingCode && <p className="text-red-500 text-sm">{errors.collegeBuildingCode.message}</p>}
-                    </div>
+                    <PortalDropdown
+                        name="collegeBuildingCode"
+                        label="College Building"
+                        value={watch("collegeBuildingCode")}
+                        onChange={(e) => setValue("collegeBuildingCode", e.target.value)}
+                        options={buildings.map((b) => ({
+                            value: b.code,
+                            label: `${b.name} (${b.code})`,
+                        }))}
+                        error={errors.collegeBuildingCode?.message}
+                        placeholder="Choose a building"
+                    />
 
                     <div className="flex items-center gap-3">
                         <input
